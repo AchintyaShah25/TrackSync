@@ -1,0 +1,29 @@
+# Project-local toolchain and caches (see docs/decisions/0003)
+.tools/
+.cache/
+.venv/
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Web
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Supabase local state
+supabase/.branches/
+supabase/.temp/
+
+# Env and OS
+.env
+.env.*
+!.env.example
+.DS_Store
+.claude/settings.local.json

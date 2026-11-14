@@ -1,0 +1,46 @@
+# Local app services. The database stack is run by the Supabase CLI (make db-up / make up),
+# see docs/decisions/0012. Containers reach it via host.docker.internal:54322.
+name: tracksync
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+      WEB_ORIGIN: http://localhost:3000
+      LOG_LEVEL: info
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["127.0.0.1:8000:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      INTERNAL_API_URL: http://api:8000
+    ports: ["127.0.0.1:3000:3000"]
+    volumes:
+      - ./apps/web/app:/repo/apps/web/app
+      - ./apps/web/components:/repo/apps/web/components
+      - ./apps/web/lib:/repo/apps/web/lib
+      - ./apps/web/styles:/repo/apps/web/styles
+    depends_on:
+      api:
+        condition: service_healthy
+
+  etl:
+    profiles: ["etl"]  # only via `docker compose run etl ...`
+    build:
+      context: .
+      dockerfile: services/etl/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    volumes: ["./.cache:/cache"]

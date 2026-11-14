@@ -1,0 +1,70 @@
+name: ETL
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC, after race weekends (SPEC §2)
+  workflow_dispatch:
+    inputs:
+      season:
+        description: "Season year (leave empty for scheduled mode)"
+        required: false
+      event:
+        description: "Round number (needs season)"
+        required: false
+      since_days:
+        description: "Scheduled mode window in days"
+        required: false
+        default: "8"
+
+concurrency:
+  group: etl
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  etl:
+    # Off until production exists: set the repo variable ETL_ENABLED=true after /deploy.
+    if: vars.ETL_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 340 # a full season at OpenF1's free rate limit is ~80 min
+    env:
+      DATABASE_URL: ${{ secrets.ETL_DATABASE_URL }}
+      FASTF1_CACHE: ${{ github.workspace }}/.cache/fastf1
+      OPENF1_CACHE_DIR: ${{ github.workspace }}/.cache/openf1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.18"
+      - name: Restore source caches
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: etl-cache-${{ github.run_id }}
+          restore-keys: etl-cache-
+      - name: Install
+        run: uv sync --frozen --package pitwall-etl --no-dev
+      - name: Run ETL
+        env:
+          # Inputs go through env, never straight into the script (prevents injection).
+          IN_SEASON: ${{ inputs.season }}
+          IN_EVENT: ${{ inputs.event }}
+          IN_SINCE: ${{ inputs.since_days || '8' }}
+        run: |
+          set -euo pipefail
+          is_int() { [[ "$1" =~ ^[0-9]+$ ]]; }
+          args=()
+          if [ -n "$IN_SEASON" ]; then
+            is_int "$IN_SEASON" || { echo "season must be a number"; exit 1; }
+            args+=(--season "$IN_SEASON")
+            if [ -n "$IN_EVENT" ]; then
+              is_int "$IN_EVENT" || { echo "event must be a number"; exit 1; }
+              args+=(--event "$IN_EVENT")
+            fi
+          else
+            is_int "$IN_SINCE" || { echo "since_days must be a number"; exit 1; }
+            args+=(--since-days "$IN_SINCE")
+          fi
+          uv run --frozen --no-dev --package pitwall-etl pitwall-etl "${args[@]}"

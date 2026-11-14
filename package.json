@@ -1,0 +1,11 @@
+{
+  "name": "pitwall",
+  "private": true,
+  "packageManager": "pnpm@11.5.1",
+  "scripts": {
+    "supabase": "supabase"
+  },
+  "devDependencies": {
+    "supabase": "^3.1.0"
+  }
+}

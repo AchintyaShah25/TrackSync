@@ -1,0 +1,116 @@
+/*
+ * Design tokens: the single source for color, spacing, radii and type.
+ * Components never hard-code these values (CLAUDE.md "Design language").
+ * Neutral grays + one accent for UI chrome. Team and tyre colors are data colors and
+ * appear only in chart series, never in chrome.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces & text */
+  --color-bg: #fbfbfa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f3f3f1;
+  --color-border: #e4e4e1;
+  --color-border-strong: #cfcfcb;
+  --color-text: #1b1b1a;
+  --color-text-muted: #5f5f5b;
+  --color-text-subtle: #8a8a85;
+
+  /* The one accent (links, focus, active controls) */
+  --color-accent: #0f766e;
+  --color-accent-hover: #115e59;
+  --color-accent-soft: #e6f3f1;
+  --color-accent-fg: #ffffff;
+  --color-focus: #0f766e;
+
+  /* Feedback */
+  --color-danger: #b42318;
+
+  /* Charts (chrome around the data) */
+  --chart-grid: #ececea;
+  --chart-axis: #8a8a85;
+  --chart-text: #5f5f5b;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #e4e4e1;
+  --chart-fallback-series: #8a8a85; /* when a team color is missing */
+  --chart-secondary-series: #5f5f5b;
+
+  /* Tyre compounds (data colors, conventional Pirelli coding; tuned for contrast) */
+  --tyre-soft: #e5484d;
+  --tyre-medium: #e2b308;
+  --tyre-hard: #c9c9c4;
+  --tyre-intermediate: #30a46c;
+  --tyre-wet: #0d74ce;
+  --tyre-unknown: #8a8a85;
+  --tyre-hard-stroke: #8a8a85; /* outline so white-ish HARD stays visible on light bg */
+
+  /* Type */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+
+  /* Spacing (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radii */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* Layout */
+  --content-max: 72rem;
+  --gutter: 1rem;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --gutter: 1.5rem;
+  }
+}
+
+/* Dark mode: applied by next-themes via class on <html>. */
+:root.dark {
+  color-scheme: dark;
+
+  --color-bg: #111110;
+  --color-surface: #191918;
+  --color-surface-muted: #222221;
+  --color-border: #2c2c2a;
+  --color-border-strong: #3d3d3a;
+  --color-text: #eeeeec;
+  --color-text-muted: #a9a9a4;
+  --color-text-subtle: #7c7c77;
+
+  --color-accent: #2fb8a8;
+  --color-accent-hover: #4fd1c1;
+  --color-accent-soft: #14302d;
+  --color-accent-fg: #0b1d1b;
+  --color-focus: #4fd1c1;
+
+  --color-danger: #ff6b5e;
+
+  --chart-grid: #252524;
+  --chart-axis: #7c7c77;
+  --chart-text: #a9a9a4;
+  --chart-tooltip-bg: #1f1f1e;
+  --chart-tooltip-border: #3d3d3a;
+  --chart-fallback-series: #7c7c77;
+  --chart-secondary-series: #a9a9a4;
+
+  --tyre-hard: #ededea;
+  --tyre-hard-stroke: #ededea;
+}

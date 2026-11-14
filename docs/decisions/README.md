@@ -1,0 +1,22 @@
+# Decision records
+
+One file per decision, numbered in order. Use `0000-template.md`. To reverse a decision,
+write a new record that supersedes the old one.
+
+| # | Title | Status | Date |
+|---|---|---|---|
+| 0001 | Decouple FastF1 ETL from the API | Accepted | 2026-11-14 |
+| 0002 | Trim v1 scope to three hero features | Accepted | 2026-11-14 |
+| 0003 | Isolated, project-local toolchain | Accepted | 2026-11-14 |
+| 0004 | Session data from OpenF1; FastF1 kept only for Jolpica and circuit info | Accepted | 2026-11-14 |
+| 0005 | Natural keys and idempotent loads | Accepted | 2026-11-14 |
+| 0006 | Fastest-lap traces as 300-point columnar jsonb | Accepted | 2026-11-14 |
+| 0007 | Circuit outline from the pole lap, in a shared normalized frame | Accepted | 2026-11-14 |
+| 0008 | Standings stored as a Jolpica snapshot | Accepted | 2026-11-14 |
+| 0009 | Keep the repo outside iCloud-synced folders | Accepted (location superseded by 0015) | 2026-11-14 |
+| 0010 | Static showcase pages with build-time generation and daily ISR | Accepted | 2026-11-14 |
+| 0011 | Track map as a hand-rolled SVG component | Accepted | 2026-11-14 |
+| 0012 | Local dev stack: Supabase CLI containers + compose for app services | Accepted | 2026-11-14 |
+| 0013 | Tests use throwaway databases on the local Supabase Postgres | Accepted | 2026-11-14 |
+| 0014 | Project name TrackSync; internal identifiers keep `pitwall` for now | Accepted | 2026-11-14 |
+| 0015 | Repo lives at ~/Desktop/TrackSync.nosync | Accepted | 2026-11-14 |

@@ -1,0 +1,7 @@
+packages:
+  - "apps/*"
+# Keep the pnpm store inside the repo (docs/decisions/0003).
+storeDir: .tools/pnpm-store
+# The Supabase CLI ships a native binary via a postinstall script.
+onlyBuiltDependencies:
+  - supabase
