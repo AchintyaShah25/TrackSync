@@ -142,7 +142,8 @@ own data. Do not scrape news sites.
 
 ## Current phase
 
-**Milestone 2: Strategy forecaster**: built and tested locally (2026-11-16), deploy pending
-(`/deploy`: migration 20261116090000, full ETL reload for decision 0025, then refit).
-See `docs/SPEC.md`. Milestone 1 shipped 2026-11-15: web https://tracksync-ruddy.vercel.app,
-API https://tracksync-api.onrender.com (decision 0018).
+**Milestone 3: Chat agent, auth, light personalization.** See `docs/SPEC.md`; start in plan mode.
+Milestone 2 (strategy forecaster) shipped 2026-11-16; Milestone 1 shipped 2026-11-15.
+Live: web https://tracksync-ruddy.vercel.app, API https://tracksync-api.onrender.com (decision 0018).
+After a model refit or showcase change, re-record web fixtures and redeploy Vercel without
+build cache (decision 0024).
