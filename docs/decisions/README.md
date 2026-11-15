@@ -22,3 +22,4 @@ write a new record that supersedes the old one.
 | 0015 | Repo lives at ~/Desktop/TrackSync.nosync | Accepted | 2026-11-14 |
 | 0016 | Internal identifiers renamed from `pitwall` to `tracksync` | Accepted | 2026-11-14 |
 | 0017 | `make up` starts only Postgres until auth lands | Accepted | 2026-11-15 |
+| 0018 | Production hosting setup and connection routing | Accepted | 2026-11-15 |

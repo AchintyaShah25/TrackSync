@@ -1,0 +1,35 @@
+# Render Blueprint for the TrackSync API (decision 0018).
+# Render dashboard: New -> Blueprint -> pick this repo. Values marked sync: false are
+# asked for once in the dashboard and never stored in git.
+services:
+  - type: web
+    name: tracksync-api
+    runtime: docker
+    plan: free
+    # Virginia sits next to the Supabase project (AWS us-east-1): lowest query latency.
+    region: virginia
+    branch: main
+    dockerContext: .
+    dockerfilePath: ./services/api/Dockerfile
+    # Only rebuild after CI passes on the pushed commit.
+    autoDeployTrigger: checksPass
+    healthCheckPath: /health
+    # Rebuild only when something the API image contains changes.
+    buildFilter:
+      paths:
+        - services/api/**
+        - packages/racemodel/**
+        - services/etl/pyproject.toml
+        - pyproject.toml
+        - uv.lock
+        - render.yaml
+    envVars:
+      # Supabase transaction pooler (IPv4, port 6543). Render has no IPv6, so the
+      # direct db.<ref>.supabase.co host is unreachable from here.
+      - key: DATABASE_URL
+        sync: false
+      # The Vercel production URL, e.g. https://tracksync.vercel.app (comma-separate several).
+      - key: WEB_ORIGIN
+        sync: false
+      - key: LOG_LEVEL
+        value: info
