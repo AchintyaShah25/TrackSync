@@ -15,6 +15,8 @@ class Settings:
     fastf1_cache: Path
     openf1_cache: Path
     openf1_max_per_minute: int
+    rag_cache: Path
+    gemini_api_key: str
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -29,6 +31,8 @@ class Settings:
             fastf1_cache=path("FASTF1_CACHE", ".cache/fastf1"),
             openf1_cache=path("OPENF1_CACHE_DIR", ".cache/openf1"),
             openf1_max_per_minute=int(os.environ.get("OPENF1_MAX_PER_MINUTE", "28")),
+            rag_cache=path("RAG_CACHE_DIR", ".cache/rag/http"),
+            gemini_api_key=os.environ.get("GEMINI_API_KEY", ""),
         )
 
 

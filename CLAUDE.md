@@ -142,8 +142,11 @@ own data. Do not scrape news sites.
 
 ## Current phase
 
-**Milestone 3: Chat agent, auth, light personalization.** See `docs/SPEC.md`; start in plan mode.
-Milestone 2 (strategy forecaster) shipped 2026-11-16; Milestone 1 shipped 2026-11-15.
+**Milestone 3: Chat agent, auth, light personalization**: built and tested locally (2026-11-16).
+Evals recorded 2026-11-15 (README; decisions 0034, 0035). Open: embeddings backfill
+(`make etl ARGS=--rag` once a day until all chunks are embedded; Gemini free = 1000/day),
+then `/deploy` (migration 20261117090000, Render/Vercel env vars incl. GROQ_MODEL, Supabase
+redirect URLs, GitHub secrets). Milestones 1-2 shipped 2026-11-15/16.
 Live: web https://tracksync-ruddy.vercel.app, API https://tracksync-api.onrender.com (decision 0018).
 After a model refit or showcase change, re-record web fixtures and redeploy Vercel without
 build cache (decision 0024).

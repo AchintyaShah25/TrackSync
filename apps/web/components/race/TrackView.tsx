@@ -1,5 +1,6 @@
 "use client";
 
+import { SaveButton } from "@/components/auth/SaveButton";
 import { TrackMap } from "@/components/charts/TrackMap";
 import type { Circuit, EventDetail, TracesResponse } from "@/lib/api/types";
 import { formatLapTime } from "@/lib/format";
@@ -79,6 +80,11 @@ export function TrackView({
           <TrackMap trace={trace} circuit={circuit} />
         )}
       </div>
+      {code && (
+        <div className="flex justify-end">
+          <SaveButton kind="chart" title={`${event.season} ${event.name}: ${code} track map`} />
+        </div>
+      )}
     </div>
   );
 }

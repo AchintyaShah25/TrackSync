@@ -2,7 +2,10 @@
 
 import { TelemetryChart } from "@/components/charts/TelemetryChart";
 import type { EventDetail, TracesResponse } from "@/lib/api/types";
+import { SaveButton } from "@/components/auth/SaveButton";
 import { seriesStyles } from "@/lib/charts/series";
+import { inUnits } from "@/lib/charts/telemetry";
+import { usePreferences } from "@/lib/queries/me";
 import { formatLapTime } from "@/lib/format";
 import { useTraces } from "@/lib/queries/race";
 import { parseChoice, parseDriverCodes } from "@/lib/urlState";
@@ -28,7 +31,12 @@ export function TelemetryView({
   const { params, update } = useUrlState();
   const session = parseChoice(params.get("session") ?? undefined, SESSIONS, defaults.session);
   const urlCodes = parseDriverCodes(params.get("drivers") ?? undefined, 2);
-  const codes = urlCodes.length ? urlCodes : defaults.codes;
+  const { prefs } = usePreferences();
+  const favorite = event.drivers.find((d) => d.id === prefs.favorite_driver_id)?.code;
+  // A favorite driver (preferences) leads the default pair unless the URL picks drivers.
+  const fallback =
+    favorite && !defaults.codes.includes(favorite) ? [favorite, defaults.codes[0]].filter(Boolean) : defaults.codes;
+  const codes = urlCodes.length ? urlCodes : fallback;
   const query = useTraces(
     event.id,
     session,
@@ -37,7 +45,8 @@ export function TelemetryView({
   );
 
   const available = SESSIONS.filter((s) => event.trace_sessions.includes(s));
-  const traces = query.data?.traces ?? [];
+  const traces = inUnits(query.data?.traces ?? [], prefs.units);
+  const speedUnit = prefs.units === "imperial" ? "mph" : "km/h";
   const styles = seriesStyles(traces.map((t) => t.driver));
 
   return (
@@ -87,12 +96,15 @@ export function TelemetryView({
             (for example a DNF on lap 1).
           </EmptyState>
         ) : (
-          <TelemetryChart traces={traces} />
+          <TelemetryChart traces={traces} speedUnit={speedUnit} />
         )}
       </div>
-      <p className="text-xs text-subtle">
-        Fastest lap per driver, resampled to 300 points by distance. Hover or tap a chart to see values.
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-subtle">
+          Fastest lap per driver, resampled to 300 points by distance. Hover or tap a chart to see values.
+        </p>
+        <SaveButton kind="chart" title={`${event.season} ${event.name}: ${codes.join(" vs ")} telemetry`} />
+      </div>
     </div>
   );
 }

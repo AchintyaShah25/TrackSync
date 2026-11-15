@@ -34,6 +34,9 @@ def _create_database(name: str) -> str:
         admin.execute(f"create database {name}")
     url = ADMIN_URL.rsplit("/", 1)[0] + f"/{name}"
     with _connect(url, autocommit=True) as conn:
+        # Supabase's auth schema lives only in the real `postgres` database (GoTrue creates
+        # it); fresh test databases get a faithful stand-in first (supabase/tests/).
+        conn.execute((ROOT / "supabase" / "tests" / "auth_shim.sql").read_text())
         for sql in sorted((ROOT / "supabase" / "migrations").glob("*.sql")):
             conn.execute(sql.read_text())
     return url

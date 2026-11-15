@@ -35,6 +35,8 @@ export interface FetchOptions {
   /** Build-time fetches retry to give a sleeping free-tier API time to wake. */
   retries?: number;
   timeoutMs?: number;
+  /** Bearer token for signed-in routes (/me, /chat). */
+  token?: string;
   /** Extra fetch init, e.g. Next's `{ next: { revalidate: 86400 } }` on the server. */
   init?: RequestInit & { next?: { revalidate?: number | false; tags?: string[] } };
 }
@@ -50,8 +52,16 @@ export async function apiPost<T>(path: string, body: unknown, opts: FetchOptions
   return apiRequest<T>("POST", path, body, opts);
 }
 
+export async function apiPut<T>(path: string, body: unknown, opts: FetchOptions = {}): Promise<T> {
+  return apiRequest<T>("PUT", path, body, opts);
+}
+
+export async function apiDelete(path: string, opts: FetchOptions = {}): Promise<void> {
+  await apiRequest<null>("DELETE", path, undefined, opts);
+}
+
 async function apiRequest<T>(
-  method: "GET" | "POST",
+  method: "GET" | "POST" | "PUT" | "DELETE",
   path: string,
   body: unknown,
   opts: FetchOptions,
@@ -68,12 +78,14 @@ async function apiRequest<T>(
         ...opts.init,
         method,
         signal: controller.signal,
-        headers:
-          body === undefined
-            ? { Accept: "application/json" }
-            : { Accept: "application/json", "Content-Type": "application/json" },
+        headers: {
+          Accept: "application/json",
+          ...(body === undefined ? {} : { "Content-Type": "application/json" }),
+          ...(opts.token ? { Authorization: `Bearer ${opts.token}` } : {}),
+        },
         body: body === undefined ? undefined : JSON.stringify(body),
       });
+      if (res.status === 204) return null as T;
       if (res.ok) return (await res.json()) as T;
       let detail = res.statusText;
       try {
@@ -112,5 +124,9 @@ export const paths = {
   standings: (year: number) => `/standings/${year}`,
   circuit: (id: string) => `/circuits/${encodeURIComponent(id)}`,
   simulate: () => "/strategy/simulate",
+  chat: () => "/chat",
+  preferences: () => "/me/preferences",
+  saved: () => "/me/saved",
+  savedItem: (id: string) => `/me/saved/${encodeURIComponent(id)}`,
   modelParams: (circuitId: string) => `/strategy/params/${encodeURIComponent(circuitId)}`,
 };

@@ -31,6 +31,8 @@ jobs:
     timeout-minutes: 340 # a full season at OpenF1's free rate limit is ~80 min
     env:
       DATABASE_URL: ${{ secrets.ETL_DATABASE_URL }}
+      # Knowledge-base embeddings (decision 0027); without it the knowledge base is text-only.
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       FASTF1_CACHE: ${{ github.workspace }}/.cache/fastf1
       OPENF1_CACHE_DIR: ${{ github.workspace }}/.cache/openf1
     steps:

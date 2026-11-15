@@ -31,6 +31,12 @@ export default defineConfig({
     url: `http://127.0.0.1:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
-    env: { SHOWCASE_FIXTURES: "1", NEXT_PUBLIC_API_URL: "http://127.0.0.1:9" },
+    env: {
+      SHOWCASE_FIXTURES: "1",
+      NEXT_PUBLIC_API_URL: "http://127.0.0.1:9",
+      // A placeholder Supabase project so the guest sign-in UI renders; tests never call it.
+      NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:9",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "e2e-placeholder",
+    },
   },
 });

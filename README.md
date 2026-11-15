@@ -2,8 +2,10 @@
 
 An unofficial Formula 1 analytics hub covering the 2023 season to the present. It
 includes race results and standings, a lap telemetry comparison, tyre strategy timelines,
-speed-colored track maps, and a strategy forecaster that replays past races with
-different pit strategies across 500 simulated races.
+speed-colored track maps, a strategy forecaster that replays past races with different
+pit strategies across 500 simulated races, and a chat assistant that answers rules,
+history and stats questions with cited sources. Everything works without an account;
+signing in (email magic link) lets you save views and set preferences.
 
 TrackSync is not affiliated with Formula 1, the FIA, or any team.
 
@@ -19,6 +21,25 @@ TrackSync is not affiliated with Formula 1, the FIA, or any team.
 
 The project plan is in [docs/SPEC.md](docs/SPEC.md), and design choices are in
 [docs/decisions/](docs/decisions/README.md).
+
+## Chat assistant: how is it checked?
+
+Answers come from four read-only tools: an allow-listed stats query layer over our own data
+(the only source of numbers), hybrid search over the FIA regulations, Wikipedia and race
+summaries (cited with licences), the strategy simulator, and charts that can only plot data
+those tools returned ([decision 0029](docs/decisions/0029-agent-tools-grounded-stats-and-charts.md)).
+A 52-question golden set ([evals/chat](evals/chat/results.md)) measures retrieval hit@5,
+whether stats questions used the stats tool, and answer correctness. Latest run
+(2026-11-15, Groq `openai/gpt-oss-120b`):
+
+| Metric | Score | Target |
+|---|---|---|
+| Retrieval hit@5 (rules + history) | 84% | 70% |
+| Stats answers that used `query_stats` | 100% | 95% |
+| Answer correctness (key facts, 51 of 52 answered) | 96% | |
+
+Embeddings cover 982 of 2,543 chunks so far: Gemini's free tier embeds 1,000 texts a day,
+so the rest backfill over the next runs ([decision 0034](docs/decisions/0034-gemini-daily-embedding-quota.md)).
 
 ## Strategy forecaster: how accurate is it?
 

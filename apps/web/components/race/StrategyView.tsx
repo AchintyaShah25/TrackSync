@@ -1,5 +1,6 @@
 "use client";
 
+import { SaveButton } from "@/components/auth/SaveButton";
 import { StrategyChart } from "@/components/charts/StrategyChart";
 import type { EventDetail, StrategyResponse } from "@/lib/api/types";
 import { useStrategy } from "@/lib/queries/race";
@@ -45,7 +46,10 @@ export function StrategyView({ event, initial }: { event: EventDetail; initial: 
           <StrategyChart data={query.data} />
         )}
       </div>
-      <p className="text-xs text-subtle">Drivers in finishing order. Each bar is one stint; gaps between colors are pit stops.</p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-subtle">Drivers in finishing order. Each bar is one stint; gaps between colors are pit stops.</p>
+        <SaveButton kind="chart" title={`${event.season} ${event.name}: tire strategies`} />
+      </div>
     </div>
   );
 }

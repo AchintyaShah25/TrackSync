@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { AccountMenu } from "../auth/AccountMenu";
 import { ThemeToggle } from "./ThemeToggle";
 
 const CURRENT_SEASON = 2026;
@@ -15,10 +16,14 @@ export function Header() {
         <nav aria-label="Main" className="flex items-center gap-1 text-sm">
           <Link
             href={`/seasons/${CURRENT_SEASON}`}
-            className="rounded-md px-3 py-2 text-muted hover:bg-surface-muted hover:text-fg"
+            className="whitespace-nowrap rounded-md px-2 py-2 text-muted hover:bg-surface-muted hover:text-fg sm:px-3"
           >
             Seasons
           </Link>
+          <Link href="/chat" className="whitespace-nowrap rounded-md px-2 py-2 text-muted hover:bg-surface-muted hover:text-fg sm:px-3">
+            Chat
+          </Link>
+          <AccountMenu />
           <ThemeToggle />
         </nav>
       </div>

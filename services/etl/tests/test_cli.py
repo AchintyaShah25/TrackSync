@@ -5,6 +5,8 @@ from tracksync_etl.pipeline import EventReport
 
 
 class FakeStore:
+    engine = None  # handed to the (stubbed) knowledge refresh
+
     def __init__(self):
         self.finished = None
 
@@ -89,6 +91,14 @@ def _patch(monkeypatch, store, pipeline, refits):
     monkeypatch.setattr(cli, "Pipeline", pipeline)
     monkeypatch.setattr(cli, "select_events", lambda events, args, st, now: events)
     monkeypatch.setattr(cli.fit_models, "refit_all", lambda st: refits.append(st) or 26)
+    rag_calls: list[dict] = []
+
+    def fake_refresh(engine, cache, embedder, **kw):
+        rag_calls.append(kw)
+        return {"rag_documents": len(kw.get("event_ids") or []) or 99}
+
+    monkeypatch.setattr(cli, "refresh_knowledge", fake_refresh)
+    return rag_calls
 
 
 def test_fit_models_alone_skips_ingestion(monkeypatch):
@@ -160,3 +170,53 @@ def test_fit_models_cannot_be_a_dry_run():
 
     with pytest.raises(SystemExit):
         cli.parse_args(["--fit-models", "--dry-run"])
+
+
+def test_rag_alone_rebuilds_the_knowledge_base_without_ingesting(monkeypatch):
+    """`--rag` rebuilds every knowledge source (full) and loads no race data.
+
+    Why: after a source or chunking change we rebuild the knowledge base on its own.
+    """
+    store, refits = FakeStore(), []
+
+    class NoIngest:
+        def __init__(self, *a, **k):
+            pass
+
+        def ingest_schedule(self, season):
+            raise AssertionError("must not ingest")
+
+    rag_calls = _patch(monkeypatch, store, NoIngest, refits)
+    assert cli.main(["--rag"]) == 0
+    assert rag_calls[0]["full"] is True and rag_calls[0]["event_ids"] == []
+    assert refits == []  # --rag alone does not refit the race model
+
+
+def test_loading_races_refreshes_their_knowledge(monkeypatch):
+    """A run that loads races refreshes those races' summaries and articles only.
+
+    Why: the weekly cron must keep chat answers current without rebuilding everything.
+    """
+    store, refits = FakeStore(), []
+    rag_calls = _patch(monkeypatch, store, _fake_pipeline(loaded_laps=900), refits)
+    assert cli.main(["--season", "2023"]) == 0
+    assert rag_calls == [rag_calls[0]] and rag_calls[0]["full"] is False
+    assert rag_calls[0]["event_ids"] == [202301]
+
+
+def test_a_failed_knowledge_refresh_fails_the_run(monkeypatch):
+    """A knowledge-base error keeps the loaded data but makes the run exit non-zero.
+
+    Why: a silently stale knowledge base would make the chat cite outdated races.
+    """
+    store, refits = FakeStore(), []
+    _patch(monkeypatch, store, _fake_pipeline(loaded_laps=900), refits)
+
+    def boom(*a, **k):
+        raise RuntimeError("wikipedia down")
+
+    monkeypatch.setattr(cli, "refresh_knowledge", boom)
+    assert cli.main(["--season", "2023"]) == 1
+    status, counts, error = store.finished
+    assert status == "failed" and "wikipedia down" in counts["rag_error"]
+    assert "knowledge base refresh failed" in error

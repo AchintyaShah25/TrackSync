@@ -5,6 +5,7 @@ tracksync-etl --season 2024 --event 16      # one event
 tracksync-etl --since-days 8                # scheduled mode: recent + missing events
 tracksync-etl --season 2024 --event 16 --dry-run
 tracksync-etl --fit-models                  # refit the race model only (no ingest)
+tracksync-etl --rag                         # rebuild the chat knowledge base only
 """
 
 from __future__ import annotations
@@ -20,6 +21,8 @@ from . import fit_models
 from .config import Settings, configure_fastf1
 from .load.db import Store, make_engine
 from .pipeline import Pipeline
+from .rag.build import refresh_knowledge
+from .rag.embed import Embedder
 from .sources.openf1 import OpenF1Client
 from .transform.reference import is_completed
 
@@ -45,12 +48,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="refit the race model for every circuit; alone, it skips ingestion "
         "(a run that loads events always refits afterwards)",
     )
+    p.add_argument(
+        "--rag",
+        action="store_true",
+        help="rebuild the chat knowledge base (FIA regulations, Wikipedia, race summaries); "
+        "alone, it skips ingestion (a run that loads events refreshes those races)",
+    )
     p.add_argument("-v", "--verbose", action="store_true")
     args = p.parse_args(argv)
-    if args.since_days is None and args.season is None and not args.fit_models:
-        p.error("give --season (optionally with --event), --since-days, or --fit-models")
-    if args.fit_models and args.dry_run:
-        p.error("--fit-models writes to the database; it cannot be combined with --dry-run")
+    if args.since_days is None and args.season is None and not (args.fit_models or args.rag):
+        p.error("give --season (optionally with --event), --since-days, --fit-models or --rag")
+    if (args.fit_models or args.rag) and args.dry_run:
+        p.error("--fit-models and --rag write to the database; they cannot be dry runs")
     if args.event is not None and args.season is None:
         p.error("--event needs --season")
     if args.season is not None and args.season < FIRST_SEASON:
@@ -87,7 +96,7 @@ def main(argv: list[str] | None = None) -> int:
     openf1 = OpenF1Client(settings.openf1_cache, per_minute=settings.openf1_max_per_minute)
     pipeline = Pipeline(store, openf1, now=now, refresh_circuits=args.refresh_circuits)
 
-    fit_only = args.fit_models and args.season is None and args.since_days is None
+    fit_only = (args.fit_models or args.rag) and args.season is None and args.since_days is None
     seasons = [] if fit_only else [args.season] if args.season else [now.year]
     run_id = store.start_run(vars(args)) if store else None
     totals: Counter = Counter()
@@ -96,7 +105,9 @@ def main(argv: list[str] | None = None) -> int:
     status, error = "ok", None
     started = time.monotonic()
     loaded_any = False
+    loaded_ids: list[int] = []
     fit_error: str | None = None
+    rag_error: str | None = None
     try:
         for season in seasons:
             events = pipeline.ingest_schedule(season)
@@ -114,7 +125,9 @@ def main(argv: list[str] | None = None) -> int:
                     failures[event["id"]] = f"{type(exc).__name__}: {str(exc)[:300]}"
                     continue
                 totals.update(report.counts)
-                loaded_any = loaded_any or bool(report.counts.get("laps"))
+                if report.counts.get("laps"):
+                    loaded_any = True
+                    loaded_ids.append(event["id"])
                 if report.skipped:
                     skipped[event["id"]] = report.skipped
                     status = "partial" if status == "ok" else status
@@ -127,11 +140,29 @@ def main(argv: list[str] | None = None) -> int:
                 # Loaded data is already committed; fail the run so the stale model is noticed.
                 log.exception("model fit failed")
                 fit_error = f"{type(exc).__name__}: {str(exc)[:300]}"
+        if store and (args.rag or loaded_ids):
+            try:
+                totals.update(
+                    refresh_knowledge(
+                        store.engine,
+                        settings.rag_cache,
+                        Embedder(settings.gemini_api_key),
+                        event_ids=loaded_ids,
+                        full=args.rag,
+                        seasons=list(range(FIRST_SEASON, now.year + 1)),
+                        current_season=now.year,
+                    )
+                )
+            except Exception as exc:
+                log.exception("knowledge base refresh failed")
+                rag_error = f"{type(exc).__name__}: {str(exc)[:300]}"
         problems = []
         if failures:
             problems.append(f"{len(failures)} event(s) failed: {sorted(failures)}")
         if fit_error:
             problems.append(f"model fit failed: {fit_error}")
+        if rag_error:
+            problems.append(f"knowledge base refresh failed: {rag_error}")
         if problems:
             status = "failed"
             error = "; ".join(problems)
@@ -144,6 +175,7 @@ def main(argv: list[str] | None = None) -> int:
             "skipped": {str(k): v for k, v in skipped.items()},
             "failed_events": {str(k): v for k, v in failures.items()},
             **({"model_fit_error": fit_error} if fit_error else {}),
+            **({"rag_error": rag_error} if rag_error else {}),
             "openf1_requests": openf1.requests_made,
             "seconds": round(time.monotonic() - started),
         }

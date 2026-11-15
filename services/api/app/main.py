@@ -7,10 +7,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
+from .auth import AuthVerifier
 from .config import Settings, get_settings
 from .db import make_engine
+from .llm import build_chain
+from .llm.client import urllib_transport
 from .ratelimit import SimulateLimiter
-from .routers import circuits, events, health, seasons, standings, strategy
+from .routers import chat, circuits, events, health, me, seasons, standings, strategy
+from .services.chat.limits import ChatLimiter
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -32,14 +36,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.simulate_limiter = SimulateLimiter.create(
         settings.simulate_per_minute, settings.simulate_global_per_minute
     )
+    # Chat (M3). Tests replace llm, auth and embed_transport with fakes.
+    app.state.settings = settings
+    app.state.llm = build_chain(settings)
+    app.state.embed_transport = urllib_transport
+    app.state.auth = AuthVerifier(settings.supabase_url, settings.supabase_anon_key)
+    app.state.chat_limiter = ChatLimiter.from_settings(settings)
     app.add_middleware(GZipMiddleware, minimum_size=1024)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
-        allow_methods=["GET", "POST"],
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
         allow_headers=["*"],
     )
-    for module in (health, seasons, events, standings, circuits, strategy):
+    for module in (health, seasons, events, standings, circuits, strategy, chat, me):
         app.include_router(module.router)
     return app
 

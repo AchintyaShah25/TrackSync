@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { FanChart } from "@/components/charts/FanChart";
 import { FinishDistribution } from "@/components/charts/FinishDistribution";
+import { SaveButton } from "@/components/auth/SaveButton";
 import { StrategyBuilder } from "@/components/forecast/StrategyBuilder";
 import { ApiError } from "@/lib/api/client";
 import type {
@@ -29,6 +30,7 @@ import {
 } from "@/lib/charts/forecast";
 import { compoundColor } from "@/lib/charts/strategy";
 import { useForecast } from "@/lib/queries/forecast";
+import { usePreferences } from "@/lib/queries/me";
 import { parseChoice, parseDriverCodes } from "@/lib/urlState";
 import { useUrlState } from "@/lib/useUrlState";
 
@@ -68,7 +70,9 @@ export function ForecastView({
     () => event.drivers.filter((d) => actualStints(stints.stints, d.id, totalLaps) && (stints.finish_position[d.id] ?? null) != null),
     [event.drivers, stints, totalLaps],
   );
-  const code = parseDriverCodes(params.get("d") ?? undefined, 1)[0] ?? defaults.driverCode;
+  const { prefs } = usePreferences();
+  const favorite = eligible.find((d) => d.id === prefs.favorite_driver_id)?.code;
+  const code = parseDriverCodes(params.get("d") ?? undefined, 1)[0] ?? favorite ?? defaults.driverCode;
   const driver = eligible.find((d) => d.code === code) ?? eligible.find((d) => d.code === defaults.driverCode) ?? eligible[0];
   const safetyCars = parseChoice(params.get("sc") ?? undefined, SC_MODES, defaults.safetyCars.toUpperCase() as "RANDOM").toLowerCase() as SafetyCarMode;
 
@@ -135,6 +139,9 @@ export function ForecastView({
           </Button>
           <span className="text-xs text-subtle">
             {dirty ? (draftsValid ? "Press Simulate to run 500 races." : "Fix the highlighted strategies first.") : "Showing these strategies."}
+          </span>
+          <span className="ml-auto">
+            <SaveButton kind="strategy" title={`${event.season} ${event.name}: ${driver.code} strategy forecast`} />
           </span>
         </div>
       </section>

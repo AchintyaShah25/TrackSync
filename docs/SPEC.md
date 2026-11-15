@@ -136,18 +136,20 @@ the ETL on an event changes no row counts; charts load in < 2 s on a warm API; C
 Acceptance: backtest metrics recorded; simulation responses under 1.5 s cold-cache.
 
 ### Milestone 3: Chat agent, auth, light personalization
-- [ ] LLM client: OpenAI-compatible, provider fallback chain, timeouts, rate limits
-- [ ] RAG ingestion in ETL: FIA regulations, Wikipedia season/race articles (store
+- [x] LLM client: OpenAI-compatible, provider fallback chain, timeouts, rate limits
+- [x] RAG ingestion in ETL: FIA regulations, Wikipedia season/race articles (store
       license + URL), generated race summaries from our data; chunk + embed into pgvector
-- [ ] Agent tools: `search_knowledge`, `query_stats` (fixed parameterized queries only),
+- [x] Agent tools: `search_knowledge`, `query_stats` (fixed parameterized queries only),
       `simulate_strategy`, `make_chart` (returns a chart spec the frontend renders)
-- [ ] Chat UI with source citations and inline charts; suggested starter questions
-- [ ] Evals: golden set of ~50 questions (rules, history, stats); measure retrieval hit
-      rate and answer correctness; run in CI; record scores in README
-- [ ] Supabase Auth (Google OAuth + email magic link); API JWT verification
-- [ ] Preferences with RLS: favorite driver/team, theme, units, chat level, pinned home
+- [x] Chat UI with source citations and inline charts; suggested starter questions
+- [x] Evals: golden set of ~50 questions (rules, history, stats); measure retrieval hit
+      rate and answer correctness; run in CI; record scores in README (2026-11-15:
+      retrieval 84%, stats-tool use 100%, correctness 96%; CI is manual dispatch,
+      `eval.yml`, to save free quota)
+- [x] Supabase Auth (email magic link; Google OAuth deferred, decision 0030); API token verification
+- [x] Preferences with RLS: favorite driver/team, theme, units, chat level, pinned home
       widgets; saved charts and strategies
-- [ ] Demo mode: every feature usable without sign-up (guest chat with a stricter
+- [x] Demo mode: every feature usable without sign-up (guest chat with a stricter
       rate limit); sign-in only needed to save things
 - [ ] Optional, only if ahead of schedule: race prediction leaderboard (predict podium
       + fastest lap before lights out, scored automatically after the ETL ingests results)
@@ -206,5 +208,5 @@ Free-tier limits change often; re-check provider pricing pages before each miles
 ## 9. Open decisions
 
 - ~~Final project name~~: **TrackSync** (decided 2026-11-14, decision 0014); domain still open
-- Embeddings: small local model vs a free embedding API (API RAM is tight)
+- ~~Embeddings~~: Gemini embedding API + Postgres full-text, hybrid (decided 2026-11-16, decision 0027)
 - Which three or four example analyses to feature on the landing page

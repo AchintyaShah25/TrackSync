@@ -1,0 +1,65 @@
+name: Eval
+
+# Chat agent evals against production data (SPEC M3, decision 0029). Manual only: each
+# full run spends about 150 free LLM requests, too many to run on every PR.
+on:
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: "Also run the full agent (uses LLM quota)"
+        type: boolean
+        default: true
+
+concurrency:
+  group: eval
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: ${{ secrets.ETL_DATABASE_URL }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    steps:
+      - name: Mask database connection details
+        run: |
+          set -euo pipefail
+          rest="${DATABASE_URL#*://}"
+          creds="${rest%%@*}"
+          hostport="${rest#*@}"; hostport="${hostport%%/*}"
+          user="${creds%%:*}"
+          host="${hostport%%:*}"
+          echo "::add-mask::${user}"
+          echo "::add-mask::${host}"
+          # Project ref alone (the part after "postgres." in the pooler username).
+          if [[ "$user" == *.* ]]; then echo "::add-mask::${user#*.}"; fi      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: "0.11.18"
+      - name: Install
+        run: uv sync --frozen --package tracksync-api
+      - name: Check golden set against the knowledge base
+        run: uv run --frozen --package tracksync-api python evals/chat/run_eval.py --check
+      - name: Run evals
+        env:
+          WITH_AGENT: ${{ inputs.agent }}
+        run: |
+          set -euo pipefail
+          if [ "$WITH_AGENT" = "true" ]; then
+            uv run --frozen --package tracksync-api python evals/chat/run_eval.py --agent
+          else
+            uv run --frozen --package tracksync-api python evals/chat/run_eval.py
+          fi
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: chat-eval-results
+          path: |
+            evals/chat/results.md
+            evals/chat/results.json

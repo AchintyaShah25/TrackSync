@@ -29,10 +29,10 @@ const PANELS: { channel: Channel; label: string; unit: string; height: number; s
 
 const km = (m: number) => `${(m / 1000).toFixed(1)} km`;
 
-export function TelemetryChart({ traces }: { traces: Trace[] }) {
+export function TelemetryChart({ traces, speedUnit = "km/h" }: { traces: Trace[]; speedUnit?: "km/h" | "mph" }) {
   const rows = useMemo(() => mergeTraces(traces), [traces]);
   const styles = useMemo(() => seriesStyles(traces.map((t) => t.driver)), [traces]);
-  const summary = useMemo(() => describe(traces), [traces]);
+  const summary = useMemo(() => describe(traces, speedUnit), [traces, speedUnit]);
 
   return (
     <figure aria-label={summary} className="flex flex-col gap-2">
@@ -41,7 +41,7 @@ export function TelemetryChart({ traces }: { traces: Trace[] }) {
         <div key={panel.channel}>
           <div className="mb-1 flex items-baseline justify-between text-xs text-muted">
             <span className="font-medium text-fg">{panel.label}</span>
-            {panel.unit && <span>{panel.unit}</span>}
+            {panel.unit && <span>{panel.channel === "speed" ? speedUnit : panel.unit}</span>}
           </div>
           <div style={{ height: panel.height }}>
             <ResponsiveContainer width="100%" height="100%">
@@ -68,7 +68,9 @@ export function TelemetryChart({ traces }: { traces: Trace[] }) {
                 />
                 <Tooltip
                   cursor={{ stroke: "var(--chart-axis)", strokeWidth: 1 }}
-                  content={(props) => <TelemetryTooltip {...props} traces={traces} channel={panel.channel} />}
+                  content={(props) => (
+                    <TelemetryTooltip {...props} traces={traces} channel={panel.channel} speedUnit={speedUnit} />
+                  )}
                   isAnimationActive={false}
                 />
                 {traces.map((t) => {
@@ -103,7 +105,8 @@ function TelemetryTooltip({
   label,
   traces,
   channel,
-}: TooltipContentProps<ValueType, NameType> & { traces: Trace[]; channel: Channel }) {
+  speedUnit,
+}: TooltipContentProps<ValueType, NameType> & { traces: Trace[]; channel: Channel; speedUnit: string }) {
   if (!active || !payload?.length) return null;
   const row = payload[0].payload as Record<string, number>;
   return (
@@ -113,7 +116,7 @@ function TelemetryTooltip({
         <p key={t.driver.id} className="flex justify-between gap-4">
           <span className="font-medium">{t.driver.code}</span>
           <span>
-            {Math.round(row[`${t.driver.id}:speed`])} km/h · {row[`${t.driver.id}:throttle`]}% · G
+            {Math.round(row[`${t.driver.id}:speed`])} {speedUnit} · {row[`${t.driver.id}:throttle`]}% · G
             {row[`${t.driver.id}:gear`]}
             {row[`${t.driver.id}:brake`] ? " · brake" : ""}
           </span>
@@ -124,11 +127,11 @@ function TelemetryTooltip({
   );
 }
 
-function describe(traces: Trace[]): string {
+function describe(traces: Trace[], speedUnit: string): string {
   if (!traces.length) return "No telemetry selected.";
   const parts = traces.map((t) => {
     const s = summarizeTrace(t);
-    return `${t.driver.full_name}: lap ${formatLapTime(t.lap_time_ms)}, top speed ${s.topSpeed} km/h, full throttle ${s.fullThrottlePct}% of the lap, ${s.brakingZones} braking zones`;
+    return `${t.driver.full_name}: lap ${formatLapTime(t.lap_time_ms)}, top speed ${s.topSpeed} ${speedUnit}, full throttle ${s.fullThrottlePct}% of the lap, ${s.brakingZones} braking zones`;
   });
   return `Telemetry comparison over one lap. ${parts.join(". ")}.`;
 }

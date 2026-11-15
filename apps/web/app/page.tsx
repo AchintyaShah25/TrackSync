@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { PinnedItems } from "@/components/me/PinnedItems";
 import { Countdown } from "@/components/race/Countdown";
 import { SectionTitle } from "@/components/ui/Card";
 import { paths } from "@/lib/api/client";
@@ -51,6 +52,7 @@ export default async function Home() {
         <Countdown events={events} />
       </section>
 
+      <PinnedItems />
       <section aria-labelledby="examples" className="flex flex-col gap-4">
         <SectionTitle id="examples">Start with an example</SectionTitle>
         <ul className="grid gap-4 sm:grid-cols-2">

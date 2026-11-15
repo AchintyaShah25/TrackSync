@@ -17,6 +17,10 @@ export DO_NOT_TRACK := 1
 # Next.js telemetry (it ignores DO_NOT_TRACK).
 export NEXT_TELEMETRY_DISABLED := 1
 
+# Local settings and secrets (LLM keys) from .env when present. .env is never committed.
+-include .env
+export GROQ_API_KEY GEMINI_API_KEY
+
 UV := uv
 SUPABASE := pnpm exec supabase
 LOCAL_DB_URL := postgresql://postgres:postgres@127.0.0.1:54322/postgres
@@ -41,7 +45,13 @@ clean-tools: ## Remove every repo-local toolchain and cache
 db-up: ## Start only the local Postgres
 	$(SUPABASE) db start
 
-up: db-up migrate ## Local Postgres + api + web (full Supabase stack arrives with auth in M3, decision 0017)
+# Postgres + Auth (gotrue), its gateway (kong) and Mailpit (read magic-link emails at
+# http://127.0.0.1:54324). Everything else stays off (decision 0031).
+SUPABASE_UNUSED := realtime,storage-api,imgproxy,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+stack-up: ## Start local Postgres + Supabase Auth (for sign-in)
+	$(SUPABASE) start -x $(SUPABASE_UNUSED)
+
+up: stack-up migrate ## Local Postgres + Auth + api + web (decision 0031)
 	docker compose up --build
 
 down: ## Stop app containers and the local Supabase stack
@@ -85,5 +95,7 @@ fmt: ## Auto-format Python
 	$(UV) run ruff check --fix .
 	$(UV) run ruff format .
 
-eval: ## Race-model backtest (writes evals/racemodel/results.md); RAG evals arrive in M3
+eval: ## Race-model backtest + chat evals (retrieval always; full agent when LLM keys are set)
 	$(UV) run --package tracksync-etl python evals/racemodel/backtest.py
+	$(UV) run --package tracksync-api python evals/chat/run_eval.py --check
+	$(UV) run --package tracksync-api python evals/chat/run_eval.py $(if $(GROQ_API_KEY)$(GEMINI_API_KEY),--agent,)

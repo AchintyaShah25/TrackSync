@@ -1,0 +1,52 @@
+{"id": "rules-01", "category": "rules", "question": "What has to happen when the safety car is deployed?", "expect_source": {"source": "fia", "section": "B5.13"}, "facts": [["safety car"]]}
+{"id": "rules-02", "category": "rules", "question": "What is a virtual safety car and what must drivers do under it?", "expect_source": {"source": "fia", "section": "B5.12"}, "facts": [["virtual safety car", "vsc"]]}
+{"id": "rules-03", "category": "rules", "question": "How many points does the winner of a Formula 1 race get?", "expect_source": {"source": "fia", "section": "A2.2"}, "facts": [["25", "twenty-five"]]}
+{"id": "rules-04", "category": "rules", "question": "How are points awarded when a race is stopped before full distance?", "expect_source": {"source": "fia", "section": "A2.2"}, "facts": [["75%", "75 %", "50%", "25%", "distance"]]}
+{"id": "rules-05", "category": "rules", "question": "What is parc ferme in F1?", "expect_source": {"source": "fia", "section": "B3."}, "facts": [["parc ferm"]]}
+{"id": "rules-06", "category": "rules", "question": "What is the penalty for a false start?", "expect_source": {"source": "fia", "section": "B5.11"}, "facts": [["penalt"]]}
+{"id": "rules-07", "category": "rules", "question": "What happens when a race is suspended with a red flag?", "expect_source": {"source": "fia", "section": "B5.14"}, "facts": [["red flag", "suspen"]]}
+{"id": "rules-08", "category": "rules", "question": "How does a race restart after it has been suspended?", "expect_source": {"source": "fia", "section": "B5.15"}, "facts": [["resum", "restart"]]}
+{"id": "rules-09", "category": "rules", "question": "What are the rules for drivers starting from the pit lane?", "expect_source": {"source": "fia", "section": "B5.3"}, "facts": [["pit lane"]]}
+{"id": "rules-10", "category": "rules", "question": "What happens on the formation lap before the start?", "expect_source": {"source": "fia", "section": "B5.6"}, "facts": [["formation lap"]]}
+{"id": "rules-11", "category": "rules", "question": "How many sets of tyres does each driver get for a race weekend?", "expect_source": {"source": "fia", "section": "B6.2"}, "facts": [["set"]]}
+{"id": "rules-12", "category": "rules", "question": "What rules apply to driving in the pit lane?", "expect_source": {"source": "fia", "section": "B1.6"}, "facts": [["pit lane"]]}
+{"id": "rules-13", "category": "rules", "question": "When can drivers use the adjustable bodywork?", "expect_source": {"source": "fia", "section": "B7.1"}, "facts": [["bodywork", "adjustable"]]}
+{"id": "rules-14", "category": "rules", "question": "How does a sprint session work?", "expect_source": {"source": "fia", "section": "B2.3"}, "facts": [["sprint"]]}
+{"id": "rules-15", "category": "rules", "question": "What happens at the end of the race when the chequered flag is shown?", "expect_source": {"source": "fia", "section": "B5.16"}, "facts": [["chequered", "end-of-session", "end of session"]]}
+{"id": "rules-16", "category": "rules", "question": "Can a team change its driver during a race weekend?", "expect_source": {"source": "fia", "section": "B1.7"}, "facts": [["driver"]]}
+{"id": "rules-17", "category": "rules", "question": "How does race qualifying work?", "expect_source": {"source": "fia", "section": "B2.4"}, "facts": [["qualifying"]]}
+{"id": "hist-01", "category": "history", "question": "What happened at the 2024 Italian Grand Prix?", "expect_source": {"title": "2024 Italian Grand Prix"}, "facts": [["Leclerc"]]}
+{"id": "hist-02", "category": "history", "question": "Why was Lewis Hamilton disqualified from the 2023 United States Grand Prix?", "expect_source": {"title": "2023 United States Grand Prix"}, "facts": [["plank", "skid"]]}
+{"id": "hist-03", "category": "history", "question": "Who won the 2023 Formula One World Championship?", "expect_source": {"title": "2023 Formula One World Championship"}, "facts": [["Verstappen"]]}
+{"id": "hist-04", "category": "history", "question": "What was remarkable about Max Verstappen's win at the 2024 São Paulo Grand Prix?", "expect_source": {"title": "2024 São Paulo Grand Prix"}, "facts": [["17th", "seventeenth"]]}
+{"id": "hist-05", "category": "history", "question": "How did the 2025 Canadian Grand Prix end?", "expect_source": {"title": "2025 Canadian Grand Prix"}, "facts": [["safety car"]]}
+{"id": "hist-06", "category": "history", "question": "How did Lewis Hamilton do at the 2024 British Grand Prix?", "expect_source": {"title": "2024 British Grand Prix"}, "facts": [["won", "win", "victory"]]}
+{"id": "hist-07", "category": "history", "question": "Who won the 2024 Monaco Grand Prix?", "expect_source": {"title": "2024 Monaco Grand Prix"}, "facts": [["Leclerc"]]}
+{"id": "hist-08", "category": "history", "question": "Which team won the 2024 constructors' championship?", "expect_source": {"title": "2024 Formula One World Championship"}, "facts": [["McLaren"]]}
+{"id": "hist-09", "category": "history", "question": "Who won the 2023 Japanese Grand Prix?", "expect_source": {"title": "2023 Japanese Grand Prix"}, "facts": [["Verstappen"]]}
+{"id": "hist-10", "category": "history", "question": "Who won the 2024 Australian Grand Prix and what happened to Verstappen?", "expect_source": {"title": "2024 Australian Grand Prix"}, "facts": [["Sainz"], ["brake", "retire"]]}
+{"id": "hist-11", "category": "history", "question": "Which driver made his Grand Prix debut at the 2024 Italian Grand Prix?", "expect_source": {"title": "2024 Italian Grand Prix"}, "facts": [["Colapinto"]]}
+{"id": "hist-12", "category": "history", "question": "Who won the first race of the 2026 season?", "expect_source": {"title": "2026 Australian Grand Prix"}, "facts": [["Russell"]]}
+{"id": "hist-13", "category": "history", "question": "Who won the 2023 Monaco Grand Prix?", "expect_source": {"title": "2023 Monaco Grand Prix"}, "facts": [["Verstappen"]]}
+{"id": "hist-14", "category": "history", "question": "Who won the 2024 Las Vegas Grand Prix?", "expect_source": {"title": "2024 Las Vegas Grand Prix"}, "facts": [["Russell"]]}
+{"id": "hist-15", "category": "history", "question": "Which team won the 2023 constructors' championship?", "expect_source": {"title": "2023 Formula One World Championship"}, "facts": [["Red Bull"]]}
+{"id": "stats-01", "category": "stats", "question": "Who won the 2024 Italian Grand Prix?", "expect_query": "race_result", "facts": [["Leclerc"]]}
+{"id": "stats-02", "category": "stats", "question": "Who took pole position at Monza in 2024?", "expect_query": "qualifying_result", "facts": [["Norris"]]}
+{"id": "stats-03", "category": "stats", "question": "How many race points did Charles Leclerc score in 2024, not counting sprints?", "expect_query": "driver_season", "facts": [["327"]]}
+{"id": "stats-04", "category": "stats", "question": "Who leads the 2026 drivers' championship?", "expect_query": "standings", "facts": [["Antonelli"]]}
+{"id": "stats-05", "category": "stats", "question": "What were the top three teams in the 2025 constructors' championship?", "expect_query": "standings", "facts": [["McLaren"], ["Mercedes"], ["Red Bull"]]}
+{"id": "stats-06", "category": "stats", "question": "How many races did Max Verstappen win from 2023 to 2025?", "expect_query": "wins", "facts": [["36"]]}
+{"id": "stats-07", "category": "stats", "question": "How many races did McLaren win in 2024?", "expect_query": "wins", "facts": [["6", "six"]]}
+{"id": "stats-08", "category": "stats", "question": "In 2024, who finished ahead more often, Norris or Piastri?", "expect_query": "head_to_head", "facts": [["Norris"], ["16"]]}
+{"id": "stats-09", "category": "stats", "question": "What tyre strategy did Oscar Piastri use at Monza in 2024?", "expect_query": "race_strategy", "facts": [["two stops", "2 stops", "two-stop", "2-stop", "two pit", "2 pit"], ["hard"]]}
+{"id": "stats-10", "category": "stats", "question": "On which lap did the safety car come out at the 2025 Canadian Grand Prix?", "expect_query": "safety_cars", "facts": [["66"]]}
+{"id": "stats-11", "category": "stats", "question": "What was Charles Leclerc's fastest lap at Monza in 2024?", "expect_query": "lap_times", "facts": [["1:23.226", "83.226"]]}
+{"id": "stats-12", "category": "stats", "question": "When is the next race?", "expect_query": "next_race", "facts": [["Las Vegas"]]}
+{"id": "stats-13", "category": "stats", "question": "Who finished second at the 2023 Monaco Grand Prix?", "expect_query": "race_result", "facts": [["Alonso"]]}
+{"id": "stats-14", "category": "stats", "question": "Who finished second at the 2025 Canadian Grand Prix?", "expect_query": "race_result", "facts": [["Verstappen"]]}
+{"id": "stats-15", "category": "stats", "question": "What was Lewis Hamilton's average finishing position in 2025?", "expect_query": "driver_season", "facts": [["7"]]}
+{"id": "stats-16", "category": "stats", "question": "How many podiums did Lando Norris get in 2024?", "expect_query": "driver_season", "facts": [["13", "thirteen"]]}
+{"id": "stats-17", "category": "stats", "question": "Who set the fastest lap in the 2024 Italian Grand Prix?", "expect_query": "race_result", "facts": [["Norris"]]}
+{"id": "stats-18", "category": "stats", "question": "How many races did Ferrari win between 2023 and 2025?", "expect_query": "wins", "facts": [["6", "six"]]}
+{"id": "stats-19", "category": "stats", "question": "In 2024 qualifying, how often did Verstappen out-qualify Hamilton?", "expect_query": "head_to_head", "facts": [["22"]]}
+{"id": "stats-20", "category": "stats", "question": "Who won the 2024 drivers' championship and with how many points?", "expect_query": "standings", "facts": [["Verstappen"], ["437"]]}

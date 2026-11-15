@@ -1,6 +1,6 @@
 # 0017: `make up` starts only Postgres until auth lands
 
-- **Status:** Accepted (amends the `make up` part of 0012)
+- **Status:** Accepted (amends the `make up` part of 0012); superseded in part by [0031](0031-make-up-runs-auth-stack.md)
 - **Date:** 2026-11-15
 - **Milestone:** 1
 

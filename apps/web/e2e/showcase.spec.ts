@@ -32,6 +32,9 @@ async function shot(page: Page, name: string, scheme: string) {
   await page.screenshot({ path: `test-results/shots/${project}-${scheme}-${name}.png`, fullPage: true });
 }
 
+// The API's /chat (a dead port in e2e), not the site's /chat page (decision 0033).
+const API_CHAT = (url: URL) => url.port === "9" && url.pathname === "/chat";
+
 // Playwright runs from apps/web (package is ESM, so no __dirname).
 const fixture = (name: string) => existsSync(path.join(process.cwd(), "fixtures", "api", name));
 
@@ -131,6 +134,70 @@ for (const scheme of ["light", "dark"] as const) {
       await expect(page.getByText("A dry race must use at least two different compounds.")).toBeVisible();
       await radios.getByRole("radio", { name: "H" }).click();
       await expect(page.getByText(/must use at least two/)).toHaveCount(0);
+      expect(errors).toEqual([]);
+    });
+
+    // Why: the chat agent is the third hero feature. The API is a dead port in e2e, so /chat
+    // is mocked at the browser (decision 0033); this checks the UI contract: cited sources,
+    // licence lines, an inline chart and the privacy notice, on desktop and mobile.
+    test(`chat renders a cited answer with a chart (${scheme})`, async ({ page }) => {
+      const errors = watchErrors(page);
+      await page.route(API_CHAT, (route) =>
+        route.fulfill({
+          contentType: "application/json",
+          body: JSON.stringify({
+            answer: "Cars must queue behind the **safety car** within ten car lengths [1].\n\n- Norris finished ahead 16 times [2]",
+            sources: [
+              { n: 1, title: "2026 F1 Sporting Regulations", section: "Article B5.13 Safety Car (SC)", url: "https://www.fia.com/x.pdf", license: "© FIA. Excerpt quoted for reference.", source: "fia", excerpt: "…" },
+              { n: 2, title: "2024 Formula One World Championship", section: "Season summary", url: "https://en.wikipedia.org/wiki/2024_Formula_One_World_Championship", license: "CC BY-SA 4.0 (Wikipedia contributors)", source: "wikipedia", excerpt: "…" },
+            ],
+            charts: [{ type: "line", title: "Finishing positions 2024", x_label: "Round", y_label: "Position",
+              series: [{ name: "NOR", points: [[1, 6], [2, 8], [3, 2]] }, { name: "PIA", points: [[1, 8], [2, 4], [3, 4]] }] }],
+            tools_used: ["search_knowledge", "query_stats", "make_chart"],
+            provider: "fake", model: "fake",
+          }),
+        }),
+      );
+      await page.goto("/chat");
+      await expect(page.getByText(/free AI providers/)).toBeVisible();
+      await page.getByRole("button", { name: "What happens when the safety car comes out?" }).click();
+      const log = page.getByRole("log");
+      await expect(log.getByText("safety car", { exact: true })).toBeVisible();
+      await expect(log.getByRole("link", { name: "Source 1" })).toHaveAttribute("href", /-src-1$/);
+      await expect(log.getByText("CC BY-SA 4.0 (Wikipedia contributors)")).toBeVisible();
+      await expect(log.locator("figure .recharts-line")).toHaveCount(2);
+      await expect(log.getByText(/looked up stats/)).toBeVisible();
+      await noHorizontalOverflow(page);
+      await shot(page, "chat", scheme);
+      expect(errors).toEqual([]);
+    });
+
+    // Why: rate limits are part of demo mode; the user must see why and when to retry.
+    test(`chat explains a rate limit (${scheme})`, async ({ page }) => {
+      await page.route(API_CHAT, (route) =>
+        route.fulfill({ status: 429, contentType: "application/json", headers: { "Retry-After": "120" },
+          body: JSON.stringify({ detail: "you have used today's 30 questions; sign in for more; it resets at midnight UTC" }) }),
+      );
+      await page.goto("/chat");
+      await page.getByLabel("Your question").fill("Who won Monza 2024?");
+      await page.getByRole("button", { name: "Send" }).click();
+      await expect(page.getByRole("alert").filter({ hasText: "sign in for more" })).toBeVisible();
+      await expect(page.getByLabel("Your question")).toHaveValue("Who won Monza 2024?"); // kept to retry
+    });
+
+    // Why: demo mode: guests use every feature; saving is the only thing that asks to sign in.
+    test(`guests are invited to sign in to save (${scheme})`, async ({ page }) => {
+      const errors = watchErrors(page);
+      await page.goto("/races/2024/16/forecast");
+      const save = page.getByRole("link", { name: "Sign in to save" });
+      await expect(save).toBeVisible();
+      await expect(save).toHaveAttribute("href", /^\/login\?next=%2Fraces%2F2024%2F16%2Fforecast/);
+      await save.click();
+      await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
+      await expect(page.getByLabel("Email")).toBeVisible();
+      await expect(page.getByRole("link", { name: "Sign in" })).toBeVisible(); // header
+      await noHorizontalOverflow(page);
+      await shot(page, "login", scheme);
       expect(errors).toEqual([]);
     });
 

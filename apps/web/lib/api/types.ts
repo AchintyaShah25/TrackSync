@@ -237,3 +237,54 @@ export interface ModelSummary {
   vsc_rate: number;
   curves: DegCurve[];
 }
+
+// --- Signed-in user (services/api/app/schemas/me.py) ---
+
+export interface Preferences {
+  favorite_driver_id: string | null;
+  favorite_team_id: string | null;
+  theme: "light" | "dark" | "system" | null;
+  units: "metric" | "imperial";
+  chat_level: "beginner" | "expert";
+  home_widgets: string[];
+}
+
+export interface SavedItemIn {
+  kind: "chart" | "strategy";
+  title: string;
+  path: string;
+}
+
+export interface SavedItem extends SavedItemIn {
+  id: string;
+  created_at: string;
+}
+
+// --- Chat (services/api/app/schemas/chat.py) ---
+
+export interface ChatSource {
+  n: number;
+  title: string;
+  section: string | null;
+  url: string | null;
+  license: string;
+  source: "fia" | "wikipedia" | "summary";
+  excerpt: string;
+}
+
+export interface ChatChartSpec {
+  type: "line" | "bar";
+  title: string;
+  x_label: string;
+  y_label: string;
+  series: { name: string; points: [number | string, number][] }[];
+}
+
+export interface ChatResponse {
+  answer: string;
+  sources: ChatSource[];
+  charts: ChatChartSpec[];
+  tools_used: string[];
+  provider: string;
+  model: string;
+}

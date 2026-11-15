@@ -24,6 +24,14 @@ export function mergeTraces(traces: Trace[]): TelemetryRow[] {
   });
 }
 
+export const MPH_PER_KMH = 0.621371;
+
+/** Speeds in the viewer's units (preferences): traces arrive in km/h. */
+export function inUnits(traces: Trace[], units: "metric" | "imperial"): Trace[] {
+  if (units === "metric") return traces;
+  return traces.map((t) => ({ ...t, points: { ...t.points, speed: t.points.speed.map((v) => v * MPH_PER_KMH) } }));
+}
+
 export interface TraceSummary {
   driverId: string;
   topSpeed: number;

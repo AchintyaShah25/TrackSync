@@ -9,6 +9,7 @@ dependencies = [
   "psycopg[binary]",
   "requests",  # already a FastF1 dependency; used directly by the OpenF1 client
   "racemodel",
+  "pypdf>=7.1.0",
 ]
 
 [project.scripts]

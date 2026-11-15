@@ -1,0 +1,567 @@
+{
+  "generated_at": "2026-11-15T23:56:26+00:00",
+  "questions": 52,
+  "embedded_chunks": 982,
+  "retrieval_mode": "hybrid (vector + full-text)",
+  "retrieval_hit_at_5": 0.844,
+  "retrieval_by_category": {
+    "rules": 0.765,
+    "history": 0.933
+  },
+  "answered": 51,
+  "unanswered": [
+    "rules-06"
+  ],
+  "answer_correctness": 0.961,
+  "answer_correctness_by_category": {
+    "history": 0.867,
+    "rules": 1.0,
+    "stats": 1.0
+  },
+  "stats_tool_compliance": 1.0,
+  "retrieval_misses": [
+    "hist-12",
+    "rules-06",
+    "rules-09",
+    "rules-15",
+    "rules-16"
+  ],
+  "wrong_answers": [
+    "hist-05",
+    "hist-12"
+  ],
+  "answers": {
+    "rules-01": {
+      "answer": "- The Race Director orders a **Safety Car (SC)** when there is immediate danger on or near the track. The command “SAFETY CAR DEPLOYED” is sent to every car, FIA light panels show **SC**, marshal posts wave yellow flags and display SC boards, and the Safety Car enters the circuit with its orange lights on【1】.  \n- All cars must **slow and line up behind the Safety Car**, which neutralises the race distance (the lap still counts)【4】.  \n- When the director judges the track safe, the message “SAFETY CAR IN THIS LAP” is broadcast, the orange lights go out and the Safety Car will head to the pit lane at the end of that lap【2】.  \n- The first car behind the Safety Car may set the pace, but it must not fall too far behind the SC (maximum gap defined in the rules)【2】.  \n- If the SC is still out on the final lap, it returns to the pits at the end of that lap and the race finishes under the normal chequered‑flag procedure【4】.  \n\n*Quick terms*: **SC** = Safety Car, **yellow flags** = drivers must not overtake, **TTCS** = total time of the race (the clock).",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-02": {
+      "answer": "**Virtual Safety Car (VSC)** – a neutralising system used when a double‑yellow flag is needed on part of the circuit but a full safety‑car isn’t required [2].\n\n**What drivers must do**\n\n- **Slow down to a prescribed delta time** and stay **above the minimum time** set by the FIA ECU in every marshalling sector and at both safety‑car lines [3].\n- **No overtaking** is allowed, except when:\n  1. entering the pits after the first safety‑car line,\n  2. leaving the pits before the second safety‑car line,\n  3. both cars are in the pit entry/exit road, or\n  4. a car has an obvious problem [1].\n- **Pit entry is restricted** – a driver may only go to the pits to change tyres while the VSC is active [4].\n- The VSC ends when the “VSC ENDING” message is shown and the lights turn green; drivers may then resume normal racing [4].\n\nIn short, the VSC forces everyone to drive at a uniform, reduced speed without overtaking, keeping the track safe until the hazard is cleared.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": [
+        "2026 F1 Sporting Regulations, issue 9",
+        "2026 F1 Sporting Regulations, issue 9",
+        "2026 F1 Sporting Regulations, issue 9",
+        "2026 F1 Sporting Regulations, issue 9"
+      ]
+    },
+    "rules-03": {
+      "answer": "The winner of a standard Formula 1 Grand Prix receives **25 championship points** (provided the leader completes at least 75 % of the race distance)【1】.  \n\n*If the race is shortened and the leader completes less than 75 % of the scheduled distance, a reduced points table applies, but for a full race the winner always gets 25 points.*",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-04": {
+      "answer": "When a race is stopped early, points are only given if the leader has completed **at least two full laps without a Safety Car or VSC**. After that, the amount depends on how much of the scheduled distance was covered:\n\n- **Less than 25 %** of the race – points from **Column 1** (6 for 1st, 4 for 2nd, …, 1 for 10th)【1†L1-L3】【2†L1-L3】  \n- **25 % – < 50 %** – points from **Column 2** (13 for 1st, 10 for 2nd, …, 5 for 10th)【3†L1-L3】  \n- **50 % – < 75 %** – points from **Column 3** (19 for 1st, 14 for 2nd, …, 8 for 10th)【3†L1-L3】  \n- **75 % or more** – full race points (25 for 1st, 18 for 2nd, …, 1 for 10th)【3†L1-L3】\n\nIf fewer than two laps are completed, **no points are awarded**【1†L1-L2】. This scaling applies to both Drivers’ and Constructors’ Championships.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-05": {
+      "answer": "**Parc Fermé** is the secured area where a Formula 1 car is kept after qualifying (or a sprint) and before the race start.  \n\n- Only a few team members (max 3) may enter, and only to do very limited work such as fitting cooling fans; any other intervention needs approval from the officials in charge of the parc fermé [1].  \n- While the car is under parc fermé conditions **no parts may be replaced or the setup changed** – the car must stay exactly as it was when it left the pit lane, except for work listed in the technical appendix or expressly permitted by the Technical Delegate [3].  \n- The area is tightly secured and monitored by scrutineers and a dedicated “Parc Fermé Camera” to ensure no unauthorised modifications are made [2].  \n\nIf a team breaches these rules, the driver must start the race (or sprint) from the pit lane as a penalty [3].  \n\nIn short, parc fermé locks the car’s setup in place to keep the competition fair from qualifying to the race start.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": [
+        "2026 F1 Sporting Regulations, issue 9",
+        "2026 F1 Sporting Regulations, issue 9",
+        "2026 F1 Sporting Regulations, issue 9"
+      ]
+    },
+    "rules-06": {
+      "error": "providers unavailable"
+    },
+    "rules-07": {
+      "answer": "- When the Race Director shows a **red flag**, the message “RED FLAG ‑ RACE SUSPENDED” (or “SPRINT SUSPENDED”) is sent to all teams and red flags appear at every marshal post and the control line【2】.  \n- **Overtaking is forbidden** and the pit‑lane exit is closed; every car must drive slowly into the pit lane. The first car goes straight to the pit‑lane exit (or a location the Director designates), and the rest line up behind it in the order they entered【2】.  \n- Cars must stay in the **Fast Lane** (the part of the pit lane where work is allowed). Only limited work such as starting the engine, adding compressed gases, or fitting permitted cooling devices may be done, and it must not delay the restart【1】.  \n- If conditions improve, the race is resumed following the normal resumption procedure. If it cannot be resumed, the final classification is taken from the end of the **penultimate lap** before the red‑flag lap【4】【5】.  \n\n*Red flag = race stopped for safety; Fast Lane = pit‑lane area where limited work is permitted.*",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-08": {
+      "answer": "- **Red‑flag suspension** – When the track is unsafe the director sends “RACE SUSPENDED”, shows red flags and orange lights. All cars must **slow down and enter the Pit Lane** and stay in the **Fast Lane**【5】.  \n- **Forming up** – The first car to reach the pit lane goes straight to the exit; the others line up behind it in the order they arrived【5】.  \n- **Resumption signal** – Once conditions improve the director issues “RESUMPTION PROCEDURE SUSPENDED” (if needed) or simply clears the red flag. Cars stay in the Fast Lane and keep their order【4】.  \n- **Rolling start** – Cars leave the pit lane, form the grid on the track, and a **Safety Car** leads them for a formation lap. When the safety car pulls in, the **green flag** is shown and racing resumes【2】.  \n\n*Jargon*: **Red flag** = race stopped; **Fast Lane** = the narrow lane in the pit lane where cars line up; **Safety Car** = a car that leads the field while conditions are checked.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-09": {
+      "answer": "- **Enter the pit lane only after coming off the track** – a car may not be driven backwards in the lane and must first cross the pit‑entry line from the circuit before it can stop at its designated pit‑stop position【1】.  \n- **Form a line in the “Fast Lane”** (the area at the end of the pit lane) and **leave in the same order you arrived**, unless another car is unduly delayed【1】.  \n- **Exit only on a green light** at the pit‑lane exit; a red light means you must stay, and a flashing blue light warns you that a car is approaching on the track【1】【5】.  \n- **No work may be done in the Fast Lane** if it could hinder other cars leaving the pit lane【2】.  \n- **If the pit lane is closed** (e.g., for safety), you may enter only for essential repairs; otherwise a penalty or stop‑and‑go is applied【4】.  \n\n*Quick jargon*: the **Fast Lane** is the short stretch at the pit‑lane exit where cars line up before re‑joining the race.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-10": {
+      "answer": "- **Grid line‑up** – Cars line up on the grid in the order set by qualifying.  \n- **Lights & start signal** – The orange lights on the start gantry flash, then go out, signalling drivers to leave the grid and begin the **formation lap** (also called the “warm‑up lap”).  \n- **Purpose of the lap** – Drivers check the car’s systems, warm the tyres and brakes, and confirm the track is clear.  \n- **Extra formation lap** – If a problem appears after the first lap but the race can still start, the Race Director may order an **extra formation lap**. All cars that can do so return to their grid spots, the “EXTRA FORMATION LAP” board appears, and after two seconds the green lights flash, telling drivers to complete another lap [1].  \n- **Pit‑lane start** – Any driver who caused the extra lap and is still able to start must enter the pit lane at the end of that lap and start the race from the pit exit; failing to do so incurs a Stop‑and‑Go penalty [2].  \n\n*The formation lap gets the cars and drivers ready for a safe standing start.*",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": [
+        "2026 F1 Sporting Regulations, issue 9",
+        "2026 F1 Sporting Regulations, issue 9"
+      ]
+    },
+    "rules-11": {
+      "answer": "Each driver receives a fixed number of tyre **sets** (a set = 2 front + 2 rear tyres of the same spec) for a normal Grand‑Prix weekend:\n\n- **Hard** – 2 sets  \n- **Medium** – 3 sets  \n- **Soft** – 8 sets  \n- **Intermediate** – 5 sets (for mixed‑wet conditions)  \n- **Wet** – 2 sets  \n\nThese numbers apply to the **standard format competition** (the usual race weekend with practice, qualifying and the race). Alternative formats (e.g., sprint weekends) use a slightly different allocation, but the figures above are the default for a typical race weekend [1].  \n\n*Quick note*: a “set” is the four tyres a car runs on at once; drivers can mix and match the allocated sets during practice, qualifying and the race, but they cannot exceed the numbers given.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": [
+        "2026 F1 Sporting Regulations, issue 9"
+      ]
+    },
+    "rules-12": {
+      "answer": "- **Speed limit** – The pit lane is limited to **80 km/h** (the Race Director can change it). Exceeding it can bring a fine in practice and a time‑penalty (5 s, 10 s, drive‑through or stop‑and‑go) in a race【5】.  \n- **No reversing** – Cars may never reverse under their own power while in the pit lane【5】.  \n- **Entry/exit rules** – You may only leave the pit lane when the exit light is **green**; a red light means you must stay inside【1】. If the pit lane is closed, you may only enter for essential, obvious repairs, otherwise a penalty is applied【4】.  \n- **Designated positions** – After entering, the car must go straight to its **Designated Pit Stop Position** and can only be driven back onto the track from there【1】.  \n- **Work zones** – All work must be done in the **Inner Lane** (or the designated pit stop box). No equipment or personnel may be in the **Fast Lane** if it could hinder other cars【3】.  \n\n*Quick jargon*: **Parc fermé** – the sealed area where cars are locked down after qualifying; **Fast Lane** – the part of the pit lane used for cars leaving the pit box.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-13": {
+      "answer": "- **When it’s allowed** – Drivers may only activate the adjustable front‑wing profiles and rear‑wing flap after the FIA has **notified them via the car’s control electronics that the system is enabled**【3】.  \n\n- **Where it can be used** – The circuit is divided into **“Activation Zones”** marked by signage. Inside those zones the driver can switch the bodywork to **partial** (front wing straight, rear wing corner) or **full** (both straight) mode【1】【3】.  \n\n- **Low‑grip conditions** – If the track is slippery, only **partial activation** is permitted and only in the specially‑designated **Low‑Grip Activation Zones**【3】.  \n\n- **Deactivation** – When the driver leaves an activation zone or the system is not enabled, the bodywork must return to its **corner‑mode** positions【2】.  \n\nIn short, drivers can use the adjustable bodywork **only after a green light from the FIA, and only while they are inside the marked activation zones (full activation) or low‑grip zones (partial activation).**",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-14": {
+      "answer": "- **What it is** – A **Sprint** is a short race (usually 100 km, about ¼ the distance of the Grand Prix) held on Saturday before the main Grand Prix on Sunday.  \n\n- **How the grid is set** – The Sprint starts from the **qualifying** order (Q‑3) that was decided earlier on Saturday. No extra qualifying session is needed.  \n\n- **Points** – The top 8 finishers earn championship points (8‑7‑6‑5‑4‑3‑2‑1). The winner also gets the pole position for Sunday’s Grand Prix.  \n\n- **Impact on the weekend** – The Sprint replaces the traditional **Sprint Shootout** (a short qualifying session) and shortens the practice schedule: usually one free‑practice on Friday, then the Sprint.  \n\n- **Key terms**  \n  - **Undercut** – Pitting earlier than a rival to gain track position on the next lap.  \n  - **VSC (Virtual Safety Car)** – A neutralised period where drivers must slow to a set delta time, keeping gaps.  \n  - **Parc Fermé** – After qualifying or the Sprint, cars are locked down; teams may only make limited changes before the race.  \n\nThe Sprint adds extra excitement, a chance for points, and can shake up the Sunday grid.",
+      "tools": [],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-15": {
+      "answer": "- When the **chequered flag** is displayed at the **Control Line**, it signals the official end of the race. Drivers must take the end‑of‑session signal and are not allowed to overtake after they cross that line【2】.  \n- If a **Safety Car** is still on track for the final lap, it will lead the field into the pit lane, then into the designated **Parc Fermé** area for post‑race scrutineering. The chequered flag is still shown at the Control Line, and the Safety Car will leave the track at the end of that lap【4】.  \n- After crossing the line, cars proceed to the pit lane, stop in Parc Fermé, and the race officials compile the final classification and award points.  \n\n*Quick jargon*:  \n- **Control Line** – the finish‑line area where the flag is shown.  \n- **Parc Fermé** – a secured area where cars are inspected after the race.  \n- **Safety Car** – a car that leads the pack when conditions require neutralising the race.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-16": {
+      "answer": "A team **can** replace a driver during a race weekend, but only under the FIA’s sporting regulations and with the stewards’ approval.\n\n- **Before qualifying** (or before sprint‑qualifying if a sprint is scheduled) a driver may be swapped, provided the change is cleared by the stewards【1】.  \n- **During free‑practice** (FP1 or FP2) teams may also run extra drivers, but they must notify the FIA at least 24 h before the session and can only make last‑minute changes (within 2 h of FP1) with stewards’ consent【3】.  \n- The replacement must use the **same power‑unit and tyre allocation** as the driver they replace【2】, and must hold a valid Super Licence (or a Free‑Practice licence)【2】.  \n\nSo, a driver change is allowed, but it must happen **before the start of qualifying (or sprint‑qualifying)** and be approved by the stewards, with the new driver using the original driver’s equipment.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "rules-17": {
+      "answer": "- **Format** – A standard Grand Prix qualifying session lasts about one hour and is split into three timed parts **Q1, Q2 and Q3** [3].  \n- **Q1 (18 min)** – All 20 cars run; the six slowest are eliminated and cannot continue. Their lap times are deleted, so only the remaining 14‑car times count for the next phase [3].  \n- **Q2 (15 min)** – After a 7‑minute break the 14 remaining cars run; again the six slowest are eliminated and their times are erased [3].  \n- **Q3 (13 min)** – The final ten cars fight for the top‑10 grid positions; the fastest lap in Q3 decides pole [5].  \n\n- **Parc fermé** – After qualifying the cars are placed in a sealed area where teams may only perform limited work, preserving the set‑up used for the session [5].  \n\n- **Undercut** – A strategy where a driver pits earlier than the car ahead to gain track position with fresh tyres.  \n- **VSC (Virtual Safety Car)** – A neutralising system that slows the whole field uniformly, used if a full safety‑car isn’t required.  \n\nThese steps set the starting grid for the race.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": [
+        "2026 F1 Sporting Regulations, issue 9",
+        "2026 F1 Sporting Regulations, issue 9"
+      ]
+    },
+    "hist-01": {
+      "answer": "- **Pole position:** Lando Norris (McLaren) started from pole.  \n- **Winner:** Charles Leclerc (Ferrari) came from 4th on the grid to win, finishing **2.664 s** ahead of Oscar Piastri (McLaren) with Norris third.  \n- **Fastest lap:** Norris set the fastest lap (1:21.432) on lap 53.  \n- **Pit strategy:** Leclerc made a single stop – a medium tyre for 15 laps, then switched to hard tyres for the final 38 laps.  \n- **Safety cars:** The race ran without any safety‑car or virtual‑safety‑car periods.  \n- **Retirements:** Yuki Tsunoda was the only driver who did not finish.  \n\n*Quick jargon:* **Pole** – the driver who qualifies fastest and starts first. **Fastest lap** – the quickest circuit lap in the race, worth an extra point if the driver finishes in the top 10. **Pit stop** – a brief stop for tyre changes or repairs. **Safety car/VSC** – neutralises the race to allow safe clean‑up; none occurred here.  \n\n[1]",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": [
+        "2024 Italian Grand Prix: race summary"
+      ]
+    },
+    "hist-02": {
+      "answer": "Lewis Hamilton was **disqualified** from the 2023 United States Grand Prix because post‑race scrutineering found that his car’s **skid block (plank)** was **excessively worn** – a breach of the technical regulations that limit how much the wooden plank under the car may be abraded during a race【1】. The wear was judged to be beyond the allowed tolerance, leading officials to invalidate his finishing position and points【2】. This was the first race since 2019 where more than one driver (Hamilton and Charles Leclerc) was disqualified for the same reason.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "hist-03": {
+      "answer": "**Max Verstappen** won the 2023 Formula 1 World Drivers’ Championship, finishing the season with 575 points and 19 race wins【1】.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-04": {
+      "answer": "- **Started 17th on the grid** and still took the checkered flag – a climb of 16 places, the biggest comeback of the season.  \n- **Won with the fastest lap** (lap 67, 1:20.472), earning the extra point for a total of **26 points**.  \n- Finished **about 19.5 seconds ahead of 2nd‑placed Esteban Ocon**, showing a dominant pace after the early scramble.\n\n*Quick jargon*:  \n- **Grid** – the starting order determined by qualifying.  \n- **Fastest lap** – the quickest single lap in the race; the driver who sets it (and finishes in the top 10) gets an extra championship point.  \n- **Points** – awarded for finishing position (25 for the win) plus the fastest‑lap point, giving Verstappen a perfect 26‑point haul.  \n\nHis victory from deep in the field highlighted Red Bull’s race‑day strategy and Verstappen’s overtaking skill, making it one of the most memorable wins of 2024.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-05": {
+      "answer": "- **Winner:** **George Russell** (Mercedes) started from pole and took the victory.  \n- **Podium:** 1️⃣ George Russell (Mercedes) – 25 pts  \n  2️⃣ Max Verstappen (Red Bull) – +0.228 s, 18 pts  \n  3️⃣ Andrea Kimi Antonelli (Mercedes) – +1.014 s, 15 pts  \n\n- **Top‑5 finishers:**  \n  4️⃣ Oscar Piastri (McLaren) – +2.109 s, 12 pts  \n  5️⃣ Charles Leclerc (Ferrari) – +3.442 s, 10 pts  \n\n- **Fastest lap:** George Russell set the fastest lap on lap 63 (1 minute 14.119 seconds), earning the extra point.  \n\nThe race was a close sprint, with Verstappen only 0.23 seconds behind Russell at the line, and the Mercedes‑Red Bull duel defined the final laps.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": false,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-06": {
+      "answer": "- **Result:** Lewis Hamilton won the race – **1st place**.  \n- **Starting position:** He started **2nd on the grid**.  \n- **Points earned:** 25 championship points (the full win‑score).  \n- **Gap to 2nd:** He finished **1.465 seconds** ahead of Max Verstappen.  \n\nHamilton’s victory at Silverstone gave him a strong boost in the 2024 championship after a solid qualifying performance.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-07": {
+      "answer": "**Charles Leclerc** won the 2024 Monaco Grand Prix, taking the victory from pole position and earning 25 points【race_result】.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-08": {
+      "answer": "**McLaren** clinched the 2024 Constructors’ Championship, finishing the season with 666 points and six race wins.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-09": {
+      "answer": "**Max Verstappen** won the 2023 Japanese Grand Prix at Suzuka, taking the victory from pole position and scoring the full 25 points plus the extra point for the fastest lap.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-10": {
+      "answer": "- **Winner:** Carlos Sainz (Ferrari) took the victory at the 2024 Australian Grand Prix, finishing ahead of teammate Charles Leclerc and Lando Norris【race_points:202403】.  \n\n- **What happened to Max Verstappen:** After starting from pole, Verstappen retired on lap 4 due to a technical failure, ending his streak of nine straight wins【1】.  \n\n**Quick F1 terms**  \n- **Pole:** Fastest qualifier, starts the race from the front.  \n- **Retire:** Driver leaves the race early, usually because of a problem with the car.  \n- **Streak:** Consecutive wins or results.  \n\nSo, while Ferrari celebrated a 1‑2 finish, Red Bull’s champion was forced out early, shaking up the early‑season championship battle.",
+      "tools": [
+        "query_stats",
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-11": {
+      "answer": "The driver who made his **Grand Prix debut** at the 2024 Italian Grand Prix was **Franco Colapinto**, who stepped in for Williams from this race onward【1】.",
+      "tools": [
+        "search_knowledge"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": false,
+      "cited": []
+    },
+    "hist-12": {
+      "answer": "The opening round of the 2026 Formula 1 season was the **Bahrain Grand Prix**, and it was won by **Max Verstappen** for Red Bull, who started from pole and took the full 25 points for the victory【1】.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": false,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-13": {
+      "answer": "**Max Verstappen** won the 2023 Monaco Grand Prix, finishing first and earning 25 points. \n\n*He started from pole and held off Fernando Alonso, who finished second.*",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-14": {
+      "answer": "**George Russell** won the 2024 Las Vegas Grand Prix, taking the victory from pole and earning 25 points.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "hist-15": {
+      "answer": "**Red Bull Racing** clinched the 2023 Constructors’ Championship, finishing the season with 860 points and 21 race wins.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-01": {
+      "answer": "**Winner:** Charles Leclerc (Ferrari)  \n\nLeclerc started from fourth on the grid and took the victory at Monza, securing 25 points for the 2024 Italian Grand Prix. The race’s fastest lap was set by Lando Norris.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-02": {
+      "answer": "**Pole position at the 2024 Italian Grand Prix (Monza) was claimed by Lando Norris** driving for McLaren.  \n\n- He set the fastest qualifying lap of **1:19.327** to secure P1.  \n\n*Pole position* means the driver starts the race from the front of the grid, giving the best chance to lead into the first corner.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-03": {
+      "answer": "Charles Leclerc scored **327 race points** in the 2024 season (this excludes the 29 points he earned from sprint races).",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-04": {
+      "answer": "**Andrea Kimi Antonelli** is currently leading the 2026 Drivers’ Championship, sitting on **390 points** after round 20 and already boasting **9 race wins**.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-05": {
+      "answer": "- **1️⃣ McLaren** – 833 points, 14 race wins  \n- **2️⃣ Mercedes** – 469 points, 2 race wins  \n- **3️⃣ Red Bull** – 451 points, 8 race wins  \n\nThe Constructors’ Championship ranks teams by the total points earned by both of their drivers throughout the season. The team with the most points at the end of the year wins the title.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-06": {
+      "answer": "**Max Verstappen won 36 races** across the 2023, 2024 and 2025 Formula 1 seasons.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-07": {
+      "answer": "- **McLaren won 6 races in the 2024 season.**  \n  The victories came at:\n\n  - Miami Grand Prix  \n  - Hungarian Grand Prix  \n  - Dutch Grand Prix  \n  - Azerbaijan Grand Prix  \n  - Singapore Grand Prix  \n  - Abu Dhabi Grand Prix  \n\nThese six wins gave McLaren a strong finish to the year.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-08": {
+      "answer": "- **Lando Norris** finished ahead of Oscar Piastri **16 times** in the 2024 season.  \n- Oscar Piastri was ahead of Norris **8 times**.\n\nSo, Norris was ahead of Piastri twice as often during the 2024 races.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-09": {
+      "answer": "- **Tyre compounds:** Medium → Hard → Hard  \n- **Stint lengths:**  \n  - **Lap 1‑16:** Medium tyres (first stint)  \n  - **Lap 17‑38:** Hard tyres (first stop)  \n  - **Lap 39‑53:** Hard tyres (second stop)  \n\nPiastri made **two pit stops** at Monza in 2024, starting on the medium tyre and then switching to a two‑stop hard‑tyre strategy for the remainder of the race. This allowed him to manage tyre wear on the high‑speed circuit while staying competitive, ultimately finishing second.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-10": {
+      "answer": "The safety car was deployed **on lap 66** of the 2025 Canadian Grand Prix and stayed out for five laps.  \n\n- **Safety car**: a neutralising vehicle that leads the pack at reduced speed when there’s an incident on track, allowing marshals to work safely.  \n- **Lap 66**: the point in the race when the safety car period began.  \n\n(Information from the race’s safety‑car data.)",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-11": {
+      "answer": "Charles Leclerc’s fastest lap at the **2024 Italian Grand Prix (Monza)** was **lap 33 with a time of 1 minute 23.226 seconds (83.226 s)**.  \n\n- Fastest lap driver overall: Lando Norris (1:21.432)【2】  \n- Leclerc’s best lap: 1:23.226 on lap 33【3】  \n\n*Quick F1 terms:*  \n- **Fastest lap:** The quickest single circuit lap in the race; the driver earns an extra point if they finish in the top 10.  \n- **Pit stop:** A stop in the garage to change tyres or fix the car.  \n- **VSC (Virtual Safety Car):** A neutralised period where drivers must drive at a set speed limit.",
+      "tools": [
+        "query_stats",
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-12": {
+      "answer": "The next Formula 1 race is the **2026 Las Vegas Grand Prix**, scheduled for **22 November 2026** (UTC 04:00) on the Las Vegas Strip street circuit.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-13": {
+      "answer": "Fernando Alonso finished second at the 2023 Monaco Grand Prix.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-14": {
+      "answer": "**Second place at the 2025 Canadian Grand Prix:**  \n- **Max Verstappen** (Red Bull) finished runner‑up, 0.228 seconds behind race winner George Russell.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-15": {
+      "answer": "Lewis Hamilton’s **average finishing position in the 2025 season was 7th place**. This figure is calculated from all his race results that year (excluding the races where he was disqualified or retired).",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-16": {
+      "answer": "Lando Norris stood on the podium **13 times** during the 2024 Formula 1 season.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-17": {
+      "answer": "**Fastest lap:** Lando Norris (McLaren) set the fastest lap at the 2024 Italian Grand Prix, completing lap 53 in **1:21.432**【...】.  \n\n*The fastest lap is the quickest single circuit lap recorded during the race; the driver who sets it earns an extra championship point (provided they finish in the top 10).*  \n\n*Quick F1 terms:*  \n- **Undercut:** Pitting earlier than a rival to gain track position with fresh tyres.  \n- **VSC (Virtual Safety Car):** A neutralised period where drivers must reduce speed uniformly.  \n- **Parc fermé:** The secured area where cars cannot be worked on after qualifying until the race start.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-18": {
+      "answer": "Ferrari secured **6 race victories** from the 2023‑2025 seasons.\n\n- 2023 Singapore Grand Prix  \n- 2024 Australian Grand Prix  \n- 2024 Monaco Grand Prix  \n- 2024 Italian Grand Prix  \n- 2024 United States Grand Prix  \n- 2024 Mexico City Grand Prix  \n\nThese wins contributed to Ferrari’s points haul and championship position during that period.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-19": {
+      "answer": "In the 2024 season Max Verstappen qualified ahead of Lewis Hamilton **22 times** out of the 24 Grand Prix weekends (Hamilton was ahead only twice)【1】.  \n\n- **Qualifying** decides the starting grid; the driver with the fastest lap starts from pole.  \n- When one driver “out‑qualifies” another, they earned a higher grid position for that race.  \n\nSo, Verstappen was the faster qualifier in the vast majority of 2024 events.",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    },
+    "stats-20": {
+      "answer": "- **Champion:** Max Verstappen  \n- **Points total:** **437** points  \n\nVerstappen secured the 2024 Drivers’ Championship with a commanding lead, finishing the season on 437 points. 🎉",
+      "tools": [
+        "query_stats"
+      ],
+      "provider": "groq",
+      "correct": true,
+      "used_stats": true,
+      "cited": []
+    }
+  }
+}
