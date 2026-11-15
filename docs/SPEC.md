@@ -96,7 +96,7 @@ written. Do not start the next milestone until the acceptance criteria pass.
 
 ### Milestone 1: Foundation and analytics
 - [x] Monorepo scaffold matching CLAUDE.md layout; Makefile; `.env.example`
-- [ ] `docker-compose.yml`: web, api, Supabase CLI local stack
+- [x] `docker-compose.yml`: web, api, Supabase CLI local stack
 - [x] Migrations: reference tables, results, laps, stints, traces, circuits
 - [x] ETL for seasons 2023 onward: schedule, results, laps, stints, downsampled
       fastest-lap traces; idempotent upserts; CLI args `--season`, `--event`

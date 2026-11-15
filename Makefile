@@ -14,6 +14,8 @@ export OPENF1_CACHE_DIR ?= $(ROOT)/.cache/openf1
 export SUPABASE_HOME := $(ROOT)/.tools/supabase-home
 export SUPABASE_TELEMETRY_DISABLED := 1
 export DO_NOT_TRACK := 1
+# Next.js telemetry (it ignores DO_NOT_TRACK).
+export NEXT_TELEMETRY_DISABLED := 1
 
 UV := uv
 SUPABASE := pnpm exec supabase
@@ -39,8 +41,7 @@ clean-tools: ## Remove every repo-local toolchain and cache
 db-up: ## Start only the local Postgres
 	$(SUPABASE) db start
 
-up: ## Local Supabase stack + api + web
-	$(SUPABASE) start
+up: db-up migrate ## Local Postgres + api + web (full Supabase stack arrives with auth in M3, decision 0017)
 	docker compose up --build
 
 down: ## Stop app containers and the local Supabase stack
@@ -48,10 +49,10 @@ down: ## Stop app containers and the local Supabase stack
 	$(SUPABASE) stop
 
 migrate: ## Apply pending supabase/migrations to the local database
-	$(SUPABASE) migration up --local
+	$(SUPABASE) migration up
 
 db-reset: ## Recreate the local database from migrations (destroys local data)
-	$(SUPABASE) db reset --local
+	$(SUPABASE) db reset
 
 db-size: ## Report database and per-table size
 	$(UV) run --package tracksync-etl python -m tracksync_etl.dbsize

@@ -16,8 +16,9 @@ write a new record that supersedes the old one.
 | 0009 | Keep the repo outside iCloud-synced folders | Accepted (location superseded by 0015) | 2026-11-14 |
 | 0010 | Static showcase pages with build-time generation and daily ISR | Accepted | 2026-11-14 |
 | 0011 | Track map as a hand-rolled SVG component | Accepted | 2026-11-14 |
-| 0012 | Local dev stack: Supabase CLI containers + compose for app services | Accepted | 2026-11-14 |
+| 0012 | Local dev stack: Supabase CLI containers + compose for app services | Accepted (`make up` amended by 0017) | 2026-11-14 |
 | 0013 | Tests use throwaway databases on the local Supabase Postgres | Accepted | 2026-11-14 |
 | 0014 | Project name TrackSync; internal identifiers keep `pitwall` for now | Accepted (internals superseded by 0016) | 2026-11-14 |
 | 0015 | Repo lives at ~/Desktop/TrackSync.nosync | Accepted | 2026-11-14 |
 | 0016 | Internal identifiers renamed from `pitwall` to `tracksync` | Accepted | 2026-11-14 |
+| 0017 | `make up` starts only Postgres until auth lands | Accepted | 2026-11-15 |

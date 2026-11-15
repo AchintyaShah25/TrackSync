@@ -1,6 +1,6 @@
 # 0012: Local dev stack: Supabase CLI containers + compose for app services
 
-- **Status:** Accepted
+- **Status:** Accepted (`make up` amended by [0017](0017-make-up-starts-postgres-only.md))
 - **Date:** 2026-11-14
 - **Milestone:** 1
 
