@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-11-15T12:23:05+00:00",
+  "calibration_laps": 5,
+  "validation": {
+    "season": 2025,
+    "races": 22,
+    "lap_mae_by_prior": {
+      "100": 0.8692,
+      "250": 0.8477,
+      "500": 0.8294,
+      "1000": 0.8081,
+      "2000": 0.8122
+    }
+  },
+  "chosen_prior_laps": 1000.0,
+  "test": {
+    "season": 2026,
+    "races": 16,
+    "laps": 13867,
+    "stints": 778,
+    "lap_mae_s": {
+      "model": 0.8169,
+      "flat": 1.2187,
+      "trend": 0.9844
+    },
+    "lap_median_ae_s": {
+      "model": 0.5775,
+      "flat": 1.042,
+      "trend": 0.765
+    },
+    "stint_mean_mae_s": {
+      "model": 0.6327,
+      "flat": 1.0333,
+      "trend": 0.8224
+    },
+    "lap_mae_by_compound_s": {
+      "HARD": 0.7965,
+      "MEDIUM": 0.7953,
+      "SOFT": 0.8835
+    }
+  },
+  "wet_races_excluded": 8,
+  "seconds": 40
+}

@@ -118,6 +118,7 @@ def build_laps(
     number_to_driver: dict[int, str],
 ) -> list[Row]:
     """One row per (driver, lap). Drivers OpenF1 knows but Jolpica does not are skipped."""
+    stints = merge_continued_stints(stints)
     windows = status_windows(race_control, session_end)
     pos_lookup = _position_lookup(positions)
     pit_laps = {(p["driver_number"], p["lap_number"]) for p in pits if p.get("lap_number")}
@@ -184,7 +185,7 @@ def build_stints(
     *, event_id: int, session: str, stints: list[Row], number_to_driver: dict[int, str]
 ) -> list[Row]:
     rows = []
-    for s in stints:
+    for s in merge_continued_stints(stints):
         driver_id = number_to_driver.get(s["driver_number"])
         if driver_id is None or s.get("lap_start") is None or s.get("lap_end") is None:
             continue
@@ -207,3 +208,45 @@ def build_stints(
     # OpenF1 occasionally repeats a stint number; keep the last occurrence.
     dedup = {(r["driver_id"], r["stint"]): r for r in rows}
     return list(dedup.values())
+
+
+def merge_continued_stints(stints: list[Row]) -> list[Row]:
+    """Merge OpenF1 stints that continue the same tyre set; renumber 1..n per car.
+
+    OpenF1 sometimes opens a new stint without a tyre change: Canada 2025 ended behind the
+    safety car and every car got one-lap stints 67, 68 and 69-70 on the same hard set
+    (tyre_age_at_start 30, 31, 32). Those are not pit stops. Counting them showed three
+    phantom stops in the strategy chart and made every forecaster alternative look about
+    45 s faster than the "real" strategy. A stint continues the previous one when the
+    compound matches and its starting tyre age equals the previous start age plus the laps
+    run on it (within one lap). Laps and stints both use this cleaned list, so their
+    stint numbers agree.
+    """
+    # OpenF1 occasionally repeats a stint number; the last occurrence wins.
+    unique = {(st.get("driver_number"), st.get("stint_number")): st for st in stints}
+    by_car: dict[object, list[Row]] = {}
+    for st in unique.values():
+        by_car.setdefault(st.get("driver_number"), []).append(st)
+    out: list[Row] = []
+    for items in by_car.values():
+        items = sorted(items, key=lambda r: r.get("stint_number") or 0)
+        merged: list[Row] = []
+        for st in items:
+            if merged:
+                prev = merged[-1]
+                age, prev_age = st.get("tyre_age_at_start"), prev.get("tyre_age_at_start")
+                prev_start, prev_end = prev.get("lap_start"), prev.get("lap_end")
+                continued = (
+                    st.get("compound") is not None
+                    and st.get("compound") == prev.get("compound")
+                    and None not in (age, prev_age, prev_start, prev_end, st.get("lap_end"))
+                    and abs(age - (prev_age + prev_end - prev_start + 1)) <= 1
+                )
+                if continued:
+                    prev["lap_end"] = max(prev_end, st["lap_end"])
+                    continue
+            merged.append(dict(st))
+        for n, st in enumerate(merged, start=1):
+            st["stint_number"] = n
+        out.extend(merged)
+    return out

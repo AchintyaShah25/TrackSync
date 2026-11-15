@@ -7,9 +7,12 @@ export interface ShowcaseExample {
   blurb: string;
   season: number;
   round: number;
-  view: "telemetry" | "strategy" | "track";
+  view: "telemetry" | "strategy" | "track" | "forecast";
   session: "Q" | "R";
-  drivers: string[]; // codes; telemetry uses two, track uses one
+  drivers: string[]; // codes; telemetry uses two, track and forecast use one
+  /** forecast only: strategies in URL form ("M20-H33") and the safety-car mode. */
+  strategies?: string[];
+  safetyCars?: "random" | "actual";
 }
 
 export const SHOWCASE: ShowcaseExample[] = [
@@ -32,6 +35,17 @@ export const SHOWCASE: ShowcaseExample[] = [
     drivers: [],
   },
   {
+    title: "Would a one-stop have won Monza for Piastri?",
+    blurb: "McLaren stopped twice; Leclerc stopped once and won by 2.7 s. 500 simulated races of Piastri on a one-stop.",
+    season: 2024,
+    round: 16,
+    view: "forecast",
+    session: "R",
+    drivers: ["PIA"],
+    strategies: ["M15-H38", "M21-H32"],
+    safetyCars: "actual",
+  },
+  {
     title: "Monaco, colored by speed",
     blurb: "Pole lap around the slowest circuit on the calendar, from hairpin to tunnel.",
     season: 2025,
@@ -52,6 +66,8 @@ export const SHOWCASE: ShowcaseExample[] = [
 ];
 
 export const showcaseHref = (e: ShowcaseExample) => {
+  // Forecast defaults are the preset itself, so the bare URL matches the pre-rendered page.
+  if (e.view === "forecast") return `/races/${e.season}/${e.round}/forecast`;
   const q = new URLSearchParams({ session: e.session });
   if (e.drivers.length) q.set(e.view === "track" ? "driver" : "drivers", e.drivers.join(","));
   return `/races/${e.season}/${e.round}/${e.view}?${q.toString()}`;

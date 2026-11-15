@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     log_level: str = "info"
     # Small pool: Render free has little RAM and Supabase free caps connections.
     db_pool_size: int = 5
+    # POST /strategy/simulate limits (decision 0023): per client and across all clients.
+    simulate_per_minute: int = 10
+    simulate_global_per_minute: int = 120
 
     @property
     def cors_origins(self) -> list[str]:

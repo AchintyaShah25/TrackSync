@@ -78,10 +78,19 @@ def simulate(
     runs: int = DEFAULT_RUNS,
     seed: int = 0,
     fixed_periods: list[Period] | None = None,
+    validate: bool = True,
 ) -> SimResult:
-    """Simulate each strategy `runs` times on the same random races."""
+    """Simulate each strategy `runs` times on the same random races.
+
+    `validate=False` skips the dry-race rules (used for a driver's real strategy, which
+    may break them, e.g. a free tyre change under a red flag); lap totals must still match.
+    """
     for s in strategies:
-        errors = validate_strategy(s, total_laps)
+        laps = sum(st.laps for st in s)
+        if validate:
+            errors = validate_strategy(s, total_laps)
+        else:
+            errors = [f"strategy covers {laps} of {total_laps} laps"] if laps != total_laps else []
         if errors:
             raise ValueError("; ".join(errors))
     rng = np.random.default_rng(seed)
@@ -90,7 +99,12 @@ def simulate(
     lap_no = np.arange(1, laps + 1, dtype=np.float64)
 
     noise = rng.normal(0.0, pace.sigma, (runs, laps))
-    pit_draws = rng.normal(0.0, 1.0, (runs, MAX_STINTS))
+    # Independent pit-crew draws per strategy: stop luck is real variance between plans.
+    pit_draws = rng.normal(0.0, 1.0, (len(strategies), runs, MAX_STINTS))
+    # How hard tyres wear on the day: one mean-1 lognormal factor per run, shared by all
+    # strategies, so plans with longer stints carry more wear risk.
+    cv = max(pace.deg_cv, 0.0)
+    deg_mult = np.exp(rng.normal(-0.5 * cv * cv, cv, runs))[:, None]
     if fixed_periods is None:
         status = _neutralizations(rng, params, runs, laps)
     else:
@@ -108,14 +122,15 @@ def simulate(
     all_stops = []
     for si, stints in enumerate(strategies):
         compound, age, stops = _tyre_plan(stints)
-        tyre = np.asarray(pace.offset)[compound]
+        offset = np.asarray(pace.offset)[compound]
+        wear = np.zeros(laps)
         for c in np.unique(compound):
             m = compound == c
-            tyre[m] += deg_curve(pace, int(c), age[m])
-        t = common + tyre[None, :]
+            wear[m] = deg_curve(pace, int(c), age[m])
+        t = common + offset[None, :] + deg_mult * wear[None, :]
         for j, stop_lap in enumerate(stops):
             loss = np.maximum(
-                ev.pit_loss + ev.pit_loss_sd * pit_draws[:, j], MIN_PIT_SHARE * ev.pit_loss
+                ev.pit_loss + ev.pit_loss_sd * pit_draws[si, :, j], MIN_PIT_SHARE * ev.pit_loss
             )
             t[:, stop_lap - 1] += loss * pit_factor[:, stop_lap - 1]
         out[si] = np.cumsum(t, axis=1)

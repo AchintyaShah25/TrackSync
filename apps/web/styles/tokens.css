@@ -36,6 +36,11 @@
   --chart-tooltip-border: #e4e4e1;
   --chart-fallback-series: #8a8a85; /* when a team color is missing */
   --chart-secondary-series: #5f5f5b;
+  /* Strategy forecaster series (one driver, so no team colors; decision 0024) */
+  --chart-strategy-1: #2563eb;
+  --chart-strategy-2: #c2410c;
+  --chart-strategy-3: #7c3aed;
+  --chart-neutral-band: #8a8a85; /* safety-car shading, used at low opacity */
 
   /* Tyre compounds (data colors, conventional Pirelli coding; tuned for contrast) */
   --tyre-soft: #e5484d;
@@ -110,6 +115,10 @@
   --chart-tooltip-border: #3d3d3a;
   --chart-fallback-series: #7c7c77;
   --chart-secondary-series: #a9a9a4;
+  --chart-strategy-1: #6ea2ff;
+  --chart-strategy-2: #fb8c4b;
+  --chart-strategy-3: #b59cff;
+  --chart-neutral-band: #7c7c77;
 
   --tyre-hard: #ededea;
   --tyre-hard-stroke: #ededea;

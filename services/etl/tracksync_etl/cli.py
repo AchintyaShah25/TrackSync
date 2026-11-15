@@ -4,6 +4,7 @@ tracksync-etl --season 2024                 # whole season (completed events)
 tracksync-etl --season 2024 --event 16      # one event
 tracksync-etl --since-days 8                # scheduled mode: recent + missing events
 tracksync-etl --season 2024 --event 16 --dry-run
+tracksync-etl --fit-models                  # refit the race model only (no ingest)
 """
 
 from __future__ import annotations
@@ -15,6 +16,7 @@ import time
 from collections import Counter
 from datetime import UTC, datetime, timedelta
 
+from . import fit_models
 from .config import Settings, configure_fastf1
 from .load.db import Store, make_engine
 from .pipeline import Pipeline
@@ -37,10 +39,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     p.add_argument("--refresh-circuits", action="store_true", help="rebuild circuit outlines")
     p.add_argument("--dry-run", action="store_true", help="fetch and transform, write nothing")
+    p.add_argument(
+        "--fit-models",
+        action="store_true",
+        help="refit the race model for every circuit; alone, it skips ingestion "
+        "(a run that loads events always refits afterwards)",
+    )
     p.add_argument("-v", "--verbose", action="store_true")
     args = p.parse_args(argv)
-    if args.since_days is None and args.season is None:
-        p.error("give --season (optionally with --event) or --since-days")
+    if args.since_days is None and args.season is None and not args.fit_models:
+        p.error("give --season (optionally with --event), --since-days, or --fit-models")
+    if args.fit_models and args.dry_run:
+        p.error("--fit-models writes to the database; it cannot be combined with --dry-run")
     if args.event is not None and args.season is None:
         p.error("--event needs --season")
     if args.season is not None and args.season < FIRST_SEASON:
@@ -77,13 +87,16 @@ def main(argv: list[str] | None = None) -> int:
     openf1 = OpenF1Client(settings.openf1_cache, per_minute=settings.openf1_max_per_minute)
     pipeline = Pipeline(store, openf1, now=now, refresh_circuits=args.refresh_circuits)
 
-    seasons = [args.season] if args.season else [now.year]
+    fit_only = args.fit_models and args.season is None and args.since_days is None
+    seasons = [] if fit_only else [args.season] if args.season else [now.year]
     run_id = store.start_run(vars(args)) if store else None
     totals: Counter = Counter()
     skipped: dict[int, list[str]] = {}
     failures: dict[int, str] = {}
     status, error = "ok", None
     started = time.monotonic()
+    loaded_any = False
+    fit_error: str | None = None
     try:
         for season in seasons:
             events = pipeline.ingest_schedule(season)
@@ -101,14 +114,27 @@ def main(argv: list[str] | None = None) -> int:
                     failures[event["id"]] = f"{type(exc).__name__}: {str(exc)[:300]}"
                     continue
                 totals.update(report.counts)
+                loaded_any = loaded_any or bool(report.counts.get("laps"))
                 if report.skipped:
                     skipped[event["id"]] = report.skipped
                     status = "partial" if status == "ok" else status
                 log.info("event %d: %s %s", event["id"], dict(report.counts), report.skipped or "")
             totals["standings"] += pipeline.ingest_standings(season)
+        if store and (args.fit_models or loaded_any):
+            try:
+                totals["model_params"] = fit_models.refit_all(store)
+            except Exception as exc:
+                # Loaded data is already committed; fail the run so the stale model is noticed.
+                log.exception("model fit failed")
+                fit_error = f"{type(exc).__name__}: {str(exc)[:300]}"
+        problems = []
         if failures:
+            problems.append(f"{len(failures)} event(s) failed: {sorted(failures)}")
+        if fit_error:
+            problems.append(f"model fit failed: {fit_error}")
+        if problems:
             status = "failed"
-            error = f"{len(failures)} event(s) failed: {sorted(failures)}"
+            error = "; ".join(problems)
     except Exception as exc:  # recorded in etl_runs, then re-raised for a red CI job
         status, error = "failed", f"{type(exc).__name__}: {exc}"
         raise
@@ -117,6 +143,7 @@ def main(argv: list[str] | None = None) -> int:
             **dict(totals),
             "skipped": {str(k): v for k, v in skipped.items()},
             "failed_events": {str(k): v for k, v in failures.items()},
+            **({"model_fit_error": fit_error} if fit_error else {}),
             "openf1_requests": openf1.requests_made,
             "seconds": round(time.monotonic() - started),
         }

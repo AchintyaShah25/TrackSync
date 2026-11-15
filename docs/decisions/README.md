@@ -26,3 +26,7 @@ write a new record that supersedes the old one.
 | 0019 | Mask database connection details in public workflow logs | Accepted | 2026-11-15 |
 | 0020 | Race model form and fitting (fixed effects + ridge shrinkage to global) | Accepted | 2026-11-15 |
 | 0021 | Monte Carlo race simulator design | Accepted | 2026-11-15 |
+| 0022 | Model params keyed by (circuit, model_version) | Accepted | 2026-11-16 |
+| 0023 | In-memory rate limiter for simulate, no new dependency | Accepted | 2026-11-16 |
+| 0024 | Forecast page: static POST example, strategy colours, URL state | Accepted | 2026-11-16 |
+| 0025 | Merge OpenF1 stints that continue the same tyre set | Accepted | 2026-11-16 |

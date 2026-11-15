@@ -36,9 +36,14 @@ Option 3, vectorized in NumPy as `(runs × laps)` arrays, 500 runs by default.
   - A stop under SC costs 0.5 × the loss and under VSC 0.65 × (fixed priors). The measured
     loss under neutralization mixes the slower reference laps with the stop itself, so
     the ratio could not be fitted cleanly.
-- **Common random numbers:** all strategies in one call share the same random races (SCs,
-  noise, pit-crew draws). The gap between strategies therefore reflects the strategy, and
-  two copies of the same strategy give identical results.
+- **Common random numbers:** all strategies in one call share the same random race: SCs,
+  lap noise and a per-run tyre-wear multiplier. Pit-crew draws are independent per
+  strategy, because stop luck is real variance between plans. Two copies of the same
+  strategy are identical until the first stop and then differ only by pit luck.
+- **Tyre-wear uncertainty:** each run scales degradation by a mean-1 lognormal factor.
+  Its log-sd (`deg_cv`) is the robust spread of per-race wear against the circuit fit:
+  0.31 on 2023–2026 data. Without it, a replay with no safety cars showed strategy gaps
+  with zero spread, which is false certainty.
 - **Neutralized laps add the same time to every car.** There is no field compression. A
   car that is 10 s behind at an SC does not close up.
 - **Finishing position:**

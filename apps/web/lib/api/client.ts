@@ -17,10 +17,17 @@ export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
+    /** Seconds from a 429's Retry-After header. */
+    public retryAfter?: number,
   ) {
     super(message);
     this.name = "ApiError";
   }
+}
+
+function retryAfter(res: Response): number | undefined {
+  const v = Number(res.headers.get("retry-after"));
+  return Number.isFinite(v) && v > 0 ? v : undefined;
 }
 
 export interface FetchOptions {
@@ -35,6 +42,20 @@ export interface FetchOptions {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function apiGet<T>(path: string, opts: FetchOptions = {}): Promise<T> {
+  return apiRequest<T>("GET", path, undefined, opts);
+}
+
+/** POST a JSON body. Used by the strategy simulator; same retry/timeout rules as GET. */
+export async function apiPost<T>(path: string, body: unknown, opts: FetchOptions = {}): Promise<T> {
+  return apiRequest<T>("POST", path, body, opts);
+}
+
+async function apiRequest<T>(
+  method: "GET" | "POST",
+  path: string,
+  body: unknown,
+  opts: FetchOptions,
+): Promise<T> {
   const { retries = 0, timeoutMs = 20_000 } = opts;
   let lastError: unknown;
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -45,8 +66,13 @@ export async function apiGet<T>(path: string, opts: FetchOptions = {}): Promise<
     try {
       const res = await fetch(`${baseUrl()}${path}`, {
         ...opts.init,
+        method,
         signal: controller.signal,
-        headers: { Accept: "application/json" },
+        headers:
+          body === undefined
+            ? { Accept: "application/json" }
+            : { Accept: "application/json", "Content-Type": "application/json" },
+        body: body === undefined ? undefined : JSON.stringify(body),
       });
       if (res.ok) return (await res.json()) as T;
       let detail = res.statusText;
@@ -56,7 +82,11 @@ export async function apiGet<T>(path: string, opts: FetchOptions = {}): Promise<
         /* non-JSON error body */
       }
       // 4xx are final; 5xx (or a cold-starting proxy) are worth retrying.
-      if (res.status < 500) throw new ApiError(res.status, String(detail));
+      // 4xx are final; FastAPI validation errors arrive as a list of messages.
+      const message = Array.isArray(detail)
+        ? detail.map((d) => (typeof d === "string" ? d : (d?.msg ?? JSON.stringify(d)))).join("; ")
+        : String(detail);
+      if (res.status < 500) throw new ApiError(res.status, message, retryAfter(res));
       lastError = new ApiError(res.status, String(detail));
     } catch (err) {
       if (err instanceof ApiError && err.status < 500) throw err;
@@ -81,4 +111,6 @@ export const paths = {
     `/events/${id}/traces?session=${session}&drivers=${drivers.map(encodeURIComponent).join(",")}`,
   standings: (year: number) => `/standings/${year}`,
   circuit: (id: string) => `/circuits/${encodeURIComponent(id)}`,
+  simulate: () => "/strategy/simulate",
+  modelParams: (circuitId: string) => `/strategy/params/${encodeURIComponent(circuitId)}`,
 };

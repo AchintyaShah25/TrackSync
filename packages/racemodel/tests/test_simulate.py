@@ -61,14 +61,37 @@ def test_stopping_under_safety_car_is_cheaper(params):
     assert np.median(sc_cost) == pytest.approx(expected, abs=2.0)
 
 
-def test_strategies_share_random_races(params):
-    """Two copies of the same strategy produce identical results in every run.
+def test_strategies_share_random_races_except_pit_luck(params):
+    """Two copies of one strategy match lap for lap until the stop; after it they differ
+    by a constant (their independent pit-stop draws), never by lap-time noise.
 
-    Why: common random numbers make the gap between strategies reflect the strategy,
-    not luck in the draws.
+    Why: common random numbers (shared SCs, noise, tyre wear) make gaps reflect the plan;
+    pit-crew luck is the one thing drawn per strategy (decision 0021).
     """
     res = simulate(params, LAPS, 90.0, [ONE_STOP, ONE_STOP], runs=100, seed=5)
-    assert np.array_equal(res.cum[0], res.cum[1])
+    diff = res.cum[0] - res.cum[1]
+    assert np.allclose(diff[:, :24], 0.0)  # laps before the stop on lap 25
+    assert np.allclose(diff[:, 24:], diff[:, [24]])  # constant after the stop
+    assert diff[:, -1].std() > 0.5  # pit luck is real variance
+
+
+def test_wear_uncertainty_widens_long_stint_outcomes(params):
+    """With wear uncertainty on, the finish spread grows; with deg_cv=0 it shrinks.
+
+    Why: a one-stop's risk is tyres falling off; the fan chart must show that risk.
+    """
+    import copy as _copy
+
+    calm = _copy.deepcopy(params)
+    calm.events.sc_rate = calm.events.vsc_rate = 0.0
+    calm.events.pit_loss_sd = 0.0
+    wild = _copy.deepcopy(calm)
+    calm.pace.deg_cv, wild.pace.deg_cv = 0.0, 0.4
+    long_stints = [Stint("MEDIUM", 20), Stint("HARD", 30)]
+    a = simulate(calm, LAPS, 90.0, [ONE_STOP, long_stints], runs=400, seed=2)
+    b = simulate(wild, LAPS, 90.0, [ONE_STOP, long_stints], runs=400, seed=2)
+    spread = lambda r: np.std(r.cum[1, :, -1] - r.cum[0, :, -1])  # noqa: E731
+    assert spread(a) < 1e-9 and spread(b) > 0.05
 
 
 def test_invalid_strategy_is_rejected(params):

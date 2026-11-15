@@ -19,7 +19,7 @@ GROSS_SLOW = 1.07  # drop laps slower than 107% of the driver-race median
 OUTLIER_SIGMAS = 3.0
 # Prior strength in pseudo-laps: a circuit with this many clean laps lands halfway
 # between its own estimate and the global one.
-PRIOR_LAPS = 500.0  # tuned by the backtest (evals/racemodel)
+PRIOR_LAPS = 1000.0  # chosen by the 2025 validation backtest (evals/racemodel/results.md)
 
 
 @dataclass
@@ -91,9 +91,19 @@ def _gross_filter(laps: LapSet) -> LapSet:
     return laps.take(laps.time <= GROSS_SLOW * med[laps.group])
 
 
+DEG2 = slice(5, 8)  # the age^2 coefficients in the coefficient vector
+
+
 def _solve(
     laps: LapSet, prior: np.ndarray | None, prior_laps: float
 ) -> tuple[np.ndarray, np.ndarray]:
+    """Ridge least squares with degradation curvature constrained to be >= 0.
+
+    A negative age^2 term makes old tyres look better the older they get. Inside the
+    observed range that is tyre management; extrapolated to a long hypothetical stint it
+    makes every one-stop look tens of seconds faster (decision 0020 addendum). Any negative
+    curvature is pinned to 0 and the rest refitted (an active-set step).
+    """
     x = _demean(design(laps.compound, laps.age, laps.lap), laps.group)
     y = _demean(laps.time, laps.group)
     xtx = x.T @ x
@@ -102,11 +112,23 @@ def _solve(
     # Penalty per coefficient scaled to its data precision, so PRIOR_LAPS reads as laps.
     scale = np.maximum(np.diag(xtx) / n, 1e-9)
     if prior is None:
-        lam = np.diag(scale * 1e-6)
+        base = scale * 1e-6
         prior = np.zeros(N_COEF)
     else:
-        lam = np.diag(scale * prior_laps)
-    beta = np.linalg.solve(xtx + lam, xty + lam @ prior)
+        base = scale * prior_laps
+        prior = np.asarray(prior, dtype=np.float64).copy()
+        prior[DEG2] = np.maximum(prior[DEG2], 0.0)
+    pinned = np.zeros(N_COEF, dtype=bool)
+    for _ in range(4):
+        lam = np.where(pinned, scale * 1e9 * n, base)
+        target = np.where(pinned, 0.0, prior)
+        beta = np.linalg.solve(xtx + np.diag(lam), xty + lam * target)
+        negative = np.zeros(N_COEF, dtype=bool)
+        negative[DEG2] = beta[DEG2] < 0
+        if not (negative & ~pinned).any():
+            break
+        pinned |= negative
+    beta[pinned] = 0.0
     return beta, y - x @ beta
 
 

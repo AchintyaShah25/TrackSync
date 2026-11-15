@@ -85,5 +85,5 @@ fmt: ## Auto-format Python
 	$(UV) run ruff check --fix .
 	$(UV) run ruff format .
 
-eval: ## RAG + race-model evals (Milestones 2-3)
-	@echo "No evals yet: added in Milestones 2 and 3."
+eval: ## Race-model backtest (writes evals/racemodel/results.md); RAG evals arrive in M3
+	$(UV) run --package tracksync-etl python evals/racemodel/backtest.py

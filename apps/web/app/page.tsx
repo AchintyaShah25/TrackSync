@@ -11,7 +11,12 @@ import { SHOWCASE, showcaseHref } from "@/lib/showcase";
 // Statically generated and revalidated daily: loads instantly while the API sleeps.
 export const revalidate = 86400;
 
-const VIEW_LABEL = { telemetry: "Telemetry", strategy: "Tire strategy", track: "Track map" } as const;
+const VIEW_LABEL = {
+  telemetry: "Telemetry",
+  strategy: "Tire strategy",
+  track: "Track map",
+  forecast: "Strategy forecast",
+} as const;
 
 export default async function Home() {
   const events = (await serverGetOrNull<EventSummary[]>(paths.events(LAST_SEASON))) ?? [];

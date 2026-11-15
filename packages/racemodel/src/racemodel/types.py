@@ -35,6 +35,9 @@ class PaceParams:
     trend: float
     sigma: float
     age_max: list[int]
+    # Race-to-race spread of tyre wear at the same circuit (log-scale sd), estimated from
+    # per-race fits. The simulator scales degradation by a random factor per run.
+    deg_cv: float = 0.3
 
     def coef_vector(self) -> list[float]:
         return [*self.offset[1:], *self.deg1, *self.deg2, self.trend]

@@ -118,20 +118,20 @@ Acceptance: landing and example pages load instantly with the API asleep; re-run
 the ETL on an event changes no row counts; charts load in < 2 s on a warm API; CI green.
 
 ### Milestone 2: Strategy forecaster (signature feature)
-- [ ] `packages/racemodel`: lap time = base pace + deg(compound, tyre age) + fuel
+- [x] `packages/racemodel`: lap time = base pace + deg(compound, tyre age) + fuel
       effect + track evolution + noise; pit loss added on stop laps
-- [ ] Fitting in ETL per circuit: exclude lap 1, in/out laps, SC/VSC laps (track
+- [x] Fitting in ETL per circuit: exclude lap 1, in/out laps, SC/VSC laps (track
       status), and outliers; shrink sparse circuits toward global priors
-- [ ] Safety car probability per circuit from history; pit loss = median pit delta
-- [ ] Monte Carlo simulator (vectorized NumPy, ~500 runs default); randomize SC timing,
+- [x] Safety car probability per circuit from history; pit loss = median pit delta
+- [x] Monte Carlo simulator (vectorized NumPy, ~500 runs default); randomize SC timing,
       pit stop duration, pace noise
-- [ ] `POST /strategy/simulate`: driver, event, list of stints; returns finish time
+- [x] `POST /strategy/simulate`: driver, event, list of stints; returns finish time
       distribution, gap-to-baseline per lap, P(gaining positions)
-- [ ] UI: build up to 3 strategies and compare them; the **outcome fan chart** (spread
+- [x] UI: build up to 3 strategies and compare them; the **outcome fan chart** (spread
       of simulated results, strategies overlaid) is the project's signature visual and
       gets extra polish; overlay the real strategy for past races
-- [ ] Static example page, e.g. "Would a one-stop have won Silverstone?"
-- [ ] Backtest on held-out races; record stint lap-time MAE in `evals/` and README
+- [x] Static example page, e.g. "Would a one-stop have won Silverstone?"
+- [x] Backtest on held-out races; record stint lap-time MAE in `evals/` and README
 
 Acceptance: backtest metrics recorded; simulation responses under 1.5 s cold-cache.
 

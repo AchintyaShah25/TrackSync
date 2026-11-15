@@ -2,7 +2,8 @@
 
 An unofficial Formula 1 analytics hub covering the 2023 season to the present. It
 includes race results and standings, a lap telemetry comparison, tyre strategy timelines,
-and speed-colored track maps.
+speed-colored track maps, and a strategy forecaster that replays past races with
+different pit strategies across 500 simulated races.
 
 TrackSync is not affiliated with Formula 1, the FIA, or any team.
 
@@ -13,11 +14,27 @@ TrackSync is not affiliated with Formula 1, the FIA, or any team.
 | `apps/web` | Next.js (App Router, TypeScript), Tailwind, Recharts, TanStack Query |
 | `services/api` | FastAPI read API on Postgres (SQLAlchemy Core, asyncpg) |
 | `services/etl` | Ingestion from OpenF1 and Jolpica-F1 (via FastF1), run weekly by GitHub Actions |
-| `packages/racemodel` | Shared race model (Milestone 2) |
+| `packages/racemodel` | Tyre-degradation fitting and Monte Carlo race simulator (NumPy only) |
 | `supabase/migrations` | The schema, the single source of truth |
 
 The project plan is in [docs/SPEC.md](docs/SPEC.md), and design choices are in
 [docs/decisions/](docs/decisions/README.md).
+
+## Strategy forecaster: how accurate is it?
+
+The lap-time model is checked by a leave-one-race-out backtest (`make eval`, full results in
+[evals/racemodel/results.md](evals/racemodel/results.md)). Settings were tuned on 22 dry
+2025 races; the numbers below are for 16 held-out dry 2026 races (13,867 laps):
+
+| Predictor | Lap-time MAE | Stint mean-pace MAE |
+| --- | --- | --- |
+| Constant pace (driver's early laps) | 1.22 s | 1.03 s |
+| Fuel/track trend only | 0.98 s | 0.82 s |
+| **TrackSync model** | **0.82 s** | **0.63 s** |
+
+The model is 33% more accurate than constant pace. Its limits are documented in
+[decision 0021](docs/decisions/0021-race-simulator-design.md): rivals keep their real race
+times, cars do not bunch up behind a safety car, and there is no traffic model.
 
 ## Local setup
 

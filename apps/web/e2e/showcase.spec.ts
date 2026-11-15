@@ -45,7 +45,7 @@ for (const scheme of ["light", "dark"] as const) {
       await page.goto("/");
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
       await expect(page.getByRole("heading", { name: "Start with an example" })).toBeVisible();
-      await expect(page.locator("section[aria-labelledby=examples] li")).toHaveCount(4);
+      await expect(page.locator("section[aria-labelledby=examples] li")).toHaveCount(5);
       await expect(page.getByText(/not affiliated with/i)).toBeVisible();
       await noHorizontalOverflow(page);
       await shot(page, "landing", scheme);
@@ -92,6 +92,45 @@ for (const scheme of ["light", "dark"] as const) {
       await expect(page.getByRole("heading", { name: "Drivers" })).toBeVisible();
       await noHorizontalOverflow(page);
       await shot(page, "season", scheme);
+      expect(errors).toEqual([]);
+    });
+
+    // Why: the outcome fan chart is the project's signature visual (SPEC M2). The showcase
+    // forecast is simulated at build time, so it must render fully with the API asleep.
+    test(`forecast showcase draws the fan chart and odds (${scheme})`, async ({ page }) => {
+      const errors = watchErrors(page);
+      await page.goto("/races/2024/16/forecast");
+      const fan = page.locator("figure[aria-label^='Strategy forecast for Oscar Piastri']");
+      await expect(fan).toBeVisible();
+      expect(await fan.locator(".recharts-area").count()).toBeGreaterThanOrEqual(4); // 2 strategies × 2 bands
+      await expect(fan.locator(".recharts-line")).toHaveCount(2);
+      await expect(page.locator("figure[aria-label^='Finishing position odds']")).toBeVisible();
+      await expect(page.getByText(/than the real strategy \(median\)/).first()).toBeVisible();
+      await expect(page.getByRole("tab", { name: "Forecast" }).or(page.getByRole("link", { name: "Forecast" }))).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+      await noHorizontalOverflow(page);
+      await shot(page, "forecast", scheme);
+      expect(errors).toEqual([]);
+    });
+
+    // Why: illegal or short strategies are blocked in the browser before any API call
+    // (user decision: block, don't just warn).
+    test(`forecast builder validates strategies (${scheme})`, async ({ page }) => {
+      const errors = watchErrors(page);
+      await page.goto("/races/2024/16/forecast");
+      const simulate = page.getByRole("button", { name: "Simulate" });
+      await expect(simulate).toBeDisabled(); // nothing changed yet
+      await page.getByRole("button", { name: "Strategy A, stint 2 laps: one fewer" }).click();
+      await expect(page.getByText("1 more lap needed (race is 53).")).toBeVisible();
+      await expect(simulate).toBeDisabled();
+      const radios = page.getByRole("radiogroup", { name: "Strategy A, stint 2 compound" });
+      await page.getByRole("button", { name: "Strategy A, stint 2 laps: one more" }).click();
+      await radios.getByRole("radio", { name: "M" }).click();
+      await expect(page.getByText("A dry race must use at least two different compounds.")).toBeVisible();
+      await radios.getByRole("radio", { name: "H" }).click();
+      await expect(page.getByText(/must use at least two/)).toHaveCount(0);
       expect(errors).toEqual([]);
     });
 

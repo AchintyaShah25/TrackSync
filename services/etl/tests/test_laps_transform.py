@@ -201,3 +201,29 @@ def test_build_stints_drops_stints_ending_before_they_start():
         number_to_driver={31: "ocon", 1: "max_verstappen"},
     )
     assert [r["driver_id"] for r in rows] == ["max_verstappen"]
+
+
+def test_build_stints_merges_stints_that_continue_the_same_tyre_set():
+    """One-lap "stints" on the same set (Canada 2025, end under SC) merge into one stint.
+
+    Why: OpenF1 opened stints 4-6 for every car without a tyre change. Stored as-is they
+    showed three phantom stops in the strategy chart and made every forecaster alternative
+    look about 45 s faster than the real strategy. A genuine same-compound stop (new set,
+    age 0) must still count.
+    """
+
+    def st(n, start, end, compound, age):
+        return {
+            "driver_number": 1, "stint_number": n, "lap_start": start, "lap_end": end,
+            "compound": compound, "tyre_age_at_start": age,
+        }  # fmt: skip
+
+    raw = [
+        st(1, 1, 11, "MEDIUM", 3), st(2, 12, 36, "HARD", 0), st(3, 37, 66, "HARD", 0),
+        st(4, 67, 67, "HARD", 30), st(5, 68, 68, "HARD", 31), st(6, 69, 70, "HARD", 32),
+    ]  # fmt: skip
+    rows = build_stints(
+        event_id=202510, session="R", stints=raw, number_to_driver={1: "max_verstappen"}
+    )
+    got = sorted((r["stint"], r["compound"], r["start_lap"], r["end_lap"]) for r in rows)
+    assert got == [(1, "MEDIUM", 1, 11), (2, "HARD", 12, 36), (3, "HARD", 37, 70)]

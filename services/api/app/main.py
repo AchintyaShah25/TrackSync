@@ -9,7 +9,8 @@ from fastapi.middleware.gzip import GZipMiddleware
 
 from .config import Settings, get_settings
 from .db import make_engine
-from .routers import circuits, events, health, seasons, standings
+from .ratelimit import SimulateLimiter
+from .routers import circuits, events, health, seasons, standings, strategy
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -28,6 +29,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         description="Unofficial F1 analytics. Not affiliated with Formula 1 or the FIA.",
         lifespan=lifespan,
     )
+    app.state.simulate_limiter = SimulateLimiter.create(
+        settings.simulate_per_minute, settings.simulate_global_per_minute
+    )
     app.add_middleware(GZipMiddleware, minimum_size=1024)
     app.add_middleware(
         CORSMiddleware,
@@ -35,7 +39,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_methods=["GET", "POST"],
         allow_headers=["*"],
     )
-    for module in (health, seasons, events, standings, circuits):
+    for module in (health, seasons, events, standings, circuits, strategy):
         app.include_router(module.router)
     return app
 

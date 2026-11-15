@@ -30,6 +30,7 @@ TABLES = [
     "fastest_lap_traces",
     "standings",
     "etl_runs",
+    "circuit_model_params",
 ]
 EVENT_SCOPED = ["results", "laps", "stints", "fastest_lap_traces"]
 _BATCH = 2000

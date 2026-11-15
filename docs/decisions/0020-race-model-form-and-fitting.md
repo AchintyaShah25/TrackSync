@@ -57,3 +57,30 @@ Option 2, with ridge shrinkage toward a global fit to get most of option 3's ben
 - **Same-name compounds differ by circuit:** "SOFT" means a different Pirelli compound
   (C3, C4 or C5) at different circuits. Fitting each circuit separately absorbs that; the
   global prior only pulls toward an average.
+
+## Backtest result (2026-11-16)
+`make eval` (evals/racemodel/results.md) runs leave-one-race-out. Prior strength was tuned
+on 22 dry 2025 races and the result reported on 16 dry 2026 races:
+- **Chosen prior:** `PRIOR_LAPS = 1000` (validation lap MAE 0.812 s; 500 gave 0.831 s,
+  2000 gave 0.818 s).
+- **Full model:** lap MAE 0.823 s, median 0.578 s, stint mean-pace MAE 0.636 s.
+- **Fuel/track trend only:** 0.980 / 0.762 / 0.819 s.
+- **Flat baseline:** 1.219 / 1.042 / 1.033 s.
+
+The tyre model adds a real but modest gain over the trend alone. The trend (fuel burn) is
+most of the predictable signal.
+
+The backtest also found unflagged neutralized laps (Spa 2025 began behind the SC with green
+track status), so every pace estimate now drops laps slower than 107% of the driver's own
+median (`racemodel.dataset.racing_laps`), the same rule the fit already used.
+
+## Addendum (2026-11-16): curvature constrained to be non-negative
+The unconstrained fit gave a negative age² term for every compound (curves that flatten
+with age). Inside the observed range that is tyre management; extrapolated to a long
+hypothetical stint, it made old tyres look better the older they got, so every one-stop
+looked tens of seconds faster. `_solve()` now pins any negative curvature to 0 (an
+active-set step), which makes wear linear at every circuit on current data.
+
+Held-out accuracy slightly *improved*: lap MAE 0.823 → 0.817 s, stint MAE 0.636 → 0.633 s
+(evals/racemodel/results.md). With convex or linear wear, hard tyres also come out
+slower than softs (+0.14 s), which is more physical than the unconstrained +0.03 s.
