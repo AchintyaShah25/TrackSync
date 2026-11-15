@@ -111,8 +111,8 @@ written. Do not start the next milestone until the acceptance criteria pass.
 - [x] Landing page with next-race countdown (viewer's local time) and 3-4 example
       links (e.g. "Compare Verstappen vs Norris at Monza"), statically generated
 - [x] Design tokens, dark mode, mobile layouts, "unofficial" footer
-- [ ] CI: lint + tests on every PR; ETL workflow with schedule + manual dispatch
-- [ ] Deploy: Supabase project, API on Render, web on Vercel
+- [x] CI: lint + tests on every PR; ETL workflow with schedule + manual dispatch
+- [x] Deploy: Supabase project, API on Render, web on Vercel
 
 Acceptance: landing and example pages load instantly with the API asleep; re-running
 the ETL on an event changes no row counts; charts load in < 2 s on a warm API; CI green.

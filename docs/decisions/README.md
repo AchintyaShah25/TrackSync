@@ -23,3 +23,6 @@ write a new record that supersedes the old one.
 | 0016 | Internal identifiers renamed from `pitwall` to `tracksync` | Accepted | 2026-11-14 |
 | 0017 | `make up` starts only Postgres until auth lands | Accepted | 2026-11-15 |
 | 0018 | Production hosting setup and connection routing | Accepted | 2026-11-15 |
+| 0019 | Mask database connection details in public workflow logs | Accepted | 2026-11-15 |
+| 0020 | Race model form and fitting (fixed effects + ridge shrinkage to global) | Accepted | 2026-11-15 |
+| 0021 | Monte Carlo race simulator design | Accepted | 2026-11-15 |

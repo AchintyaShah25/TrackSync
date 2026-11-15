@@ -34,6 +34,21 @@ jobs:
       FASTF1_CACHE: ${{ github.workspace }}/.cache/fastf1
       OPENF1_CACHE_DIR: ${{ github.workspace }}/.cache/openf1
     steps:
+      # The repo is public, so run logs are too. GitHub masks the whole secret but not
+      # its parts; a DB error could print the host or the username (which contains the
+      # Supabase project ref). Mask those pieces before anything else runs (decision 0019).
+      - name: Mask database connection details
+        run: |
+          set -euo pipefail
+          rest="${DATABASE_URL#*://}"
+          creds="${rest%%@*}"
+          hostport="${rest#*@}"; hostport="${hostport%%/*}"
+          user="${creds%%:*}"
+          host="${hostport%%:*}"
+          echo "::add-mask::${user}"
+          echo "::add-mask::${host}"
+          # Project ref alone (the part after "postgres." in the pooler username).
+          if [[ "$user" == *.* ]]; then echo "::add-mask::${user#*.}"; fi
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.3.3 # no floating major tags since v10
         with:

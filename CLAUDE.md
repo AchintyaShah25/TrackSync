@@ -142,4 +142,5 @@ own data. Do not scrape news sites.
 
 ## Current phase
 
-**Milestone 1: Foundation and analytics.** See `docs/SPEC.md`.
+**Milestone 2: Strategy forecaster.** See `docs/SPEC.md`. Milestone 1 shipped 2026-11-15:
+web https://tracksync-ruddy.vercel.app, API https://tracksync-api.onrender.com (decision 0018).
