@@ -2,6 +2,7 @@
 
 import { TelemetryChart } from "@/components/charts/TelemetryChart";
 import type { EventDetail, TracesResponse } from "@/lib/api/types";
+import { seriesStyles } from "@/lib/charts/series";
 import { formatLapTime } from "@/lib/format";
 import { useTraces } from "@/lib/queries/race";
 import { parseChoice, parseDriverCodes } from "@/lib/urlState";
@@ -37,6 +38,7 @@ export function TelemetryView({
 
   const available = SESSIONS.filter((s) => event.trace_sessions.includes(s));
   const traces = query.data?.traces ?? [];
+  const styles = seriesStyles(traces.map((t) => t.driver));
 
   return (
     <div className="flex flex-col gap-6">
@@ -54,7 +56,10 @@ export function TelemetryView({
         <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
           {traces.map((t) => (
             <div key={t.driver.id}>
-              <dt className="text-xs text-subtle">{t.driver.full_name} · fastest lap {t.lap}</dt>
+              <dt className="flex items-center gap-2 text-xs text-subtle">
+                <LineSwatch color={styles.get(t.driver.id)?.color} dashed={styles.get(t.driver.id)?.dashed} />
+                {t.driver.full_name} · fastest lap {t.lap}
+              </dt>
               <dd className="font-medium">{formatLapTime(t.lap_time_ms)}</dd>
             </div>
           ))}
@@ -89,6 +94,15 @@ export function TelemetryView({
         Fastest lap per driver, resampled to 300 points by distance. Hover or tap a chart to see values.
       </p>
     </div>
+  );
+}
+
+/** Legend key: a short line in the series color, dashed for a same-team second driver. */
+function LineSwatch({ color, dashed }: { color?: string; dashed?: boolean }) {
+  return (
+    <svg aria-hidden width="20" height="6" viewBox="0 0 20 6">
+      <line x1="1" y1="3" x2="19" y2="3" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeDasharray={dashed ? "5 3" : undefined} />
+    </svg>
   );
 }
 

@@ -1,7 +1,7 @@
 from datetime import UTC, datetime, timedelta
 
 import numpy as np
-from pitwall_etl.transform.geometry import (
+from tracksync_etl.transform.geometry import (
     TRACE_POINTS,
     Frame,
     build_corners,

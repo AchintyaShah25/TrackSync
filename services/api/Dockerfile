@@ -11,11 +11,11 @@ COPY pyproject.toml uv.lock ./
 COPY packages/racemodel/pyproject.toml packages/racemodel/
 COPY services/api/pyproject.toml services/api/
 COPY services/etl/pyproject.toml services/etl/
-RUN uv sync --frozen --no-dev --package pitwall-api --no-install-workspace
+RUN uv sync --frozen --no-dev --package tracksync-api --no-install-workspace
 
 COPY packages/racemodel packages/racemodel
 COPY services/api services/api
-RUN uv sync --frozen --no-dev --package pitwall-api
+RUN uv sync --frozen --no-dev --package tracksync-api
 
 RUN useradd --create-home api
 USER api

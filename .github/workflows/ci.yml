@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3 # no floating major tags since v10
         with:
           version: "0.11.18"
       - uses: pnpm/action-setup@v6
@@ -59,3 +59,15 @@ jobs:
         env:
           SHOWCASE_FIXTURES: "1"
           NEXT_PUBLIC_API_URL: http://localhost:8000
+      # Showcase pages must render with no API (Playwright builds again with a dead API URL).
+      - name: Install Chromium for Playwright
+        run: pnpm e2e:install --with-deps
+      - name: End-to-end showcase tests
+        run: pnpm e2e
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-screenshots
+          path: apps/web/test-results/
+          retention-days: 7

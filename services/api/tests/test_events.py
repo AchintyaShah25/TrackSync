@@ -35,6 +35,7 @@ async def test_results_by_session(client):
     race = (await client.get("/events/202416/results")).json()
     assert [(r["position"], r["driver"]["id"]) for r in race] == [(1, "leclerc"), (3, "norris")]
     assert race[0]["time_ms"] == 4480727
+    assert (race[0]["laps"], race[1]["laps"]) == (53, 52)  # lapped cars are shown by laps
     quali = (await client.get("/events/202416/results?session=Q")).json()
     assert quali[0]["driver"]["code"] == "NOR"
     assert (await client.get("/events/202416/results?session=S")).json() == []

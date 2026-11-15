@@ -12,14 +12,14 @@ COPY pyproject.toml uv.lock ./
 COPY packages/racemodel/pyproject.toml packages/racemodel/
 COPY services/api/pyproject.toml services/api/
 COPY services/etl/pyproject.toml services/etl/
-RUN uv sync --frozen --no-dev --package pitwall-etl --no-install-workspace
+RUN uv sync --frozen --no-dev --package tracksync-etl --no-install-workspace
 
 COPY packages/racemodel packages/racemodel
 COPY services/etl services/etl
-RUN uv sync --frozen --no-dev --package pitwall-etl
+RUN uv sync --frozen --no-dev --package tracksync-etl
 
 RUN useradd --create-home etl && mkdir -p /cache && chown etl /cache
 USER etl
 VOLUME /cache
 ENV PATH="/app/.venv/bin:$PATH"
-ENTRYPOINT ["pitwall-etl"]
+ENTRYPOINT ["tracksync-etl"]

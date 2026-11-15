@@ -1,6 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
-from pitwall_etl.transform.laps import build_laps, build_stints, lap_status, status_windows
+from tracksync_etl.transform.laps import build_laps, build_stints, lap_status, status_windows
 
 T0 = datetime(2024, 11, 3, 15, 30, tzinfo=UTC)
 

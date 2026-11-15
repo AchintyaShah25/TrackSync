@@ -35,7 +35,7 @@ jobs:
       OPENF1_CACHE_DIR: ${{ github.workspace }}/.cache/openf1
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3 # no floating major tags since v10
         with:
           version: "0.11.18"
       - name: Restore source caches
@@ -45,7 +45,7 @@ jobs:
           key: etl-cache-${{ github.run_id }}
           restore-keys: etl-cache-
       - name: Install
-        run: uv sync --frozen --package pitwall-etl --no-dev
+        run: uv sync --frozen --package tracksync-etl --no-dev
       - name: Run ETL
         env:
           # Inputs go through env, never straight into the script (prevents injection).
@@ -67,4 +67,4 @@ jobs:
             is_int "$IN_SINCE" || { echo "since_days must be a number"; exit 1; }
             args+=(--since-days "$IN_SINCE")
           fi
-          uv run --frozen --no-dev --package pitwall-etl pitwall-etl "${args[@]}"
+          uv run --frozen --no-dev --package tracksync-etl tracksync-etl "${args[@]}"

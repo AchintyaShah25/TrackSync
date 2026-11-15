@@ -30,6 +30,8 @@ LAP_SESSIONS = ("R", "S")
 TRACE_SESSIONS = ("Q", "R")
 # OpenF1 data for a session can still be filling in for a while; don't cache it before then.
 CACHE_AFTER = timedelta(days=3)
+# How far Jolpica's race start may be from OpenF1's and still be the same race.
+RACE_MATCH_WINDOW = timedelta(hours=36)
 
 
 def _fmt(ts: datetime) -> str:
@@ -42,6 +44,20 @@ class EventReport:
     event_id: int
     counts: Counter = field(default_factory=Counter)
     skipped: list[str] = field(default_factory=list)
+
+
+def official_race_start(event: dict, of1: dict[str, dict]) -> datetime | None:
+    """OpenF1's race start (official timing) when Jolpica's differs by more than an hour."""
+    race = of1.get("R")
+    if not race or not race.get("date_start"):
+        return None
+    official = datetime.fromisoformat(race["date_start"])
+    if abs((official - event["race_start_utc"]).total_seconds()) > 3600:
+        log.info(
+            "event %s: race start %s -> %s (OpenF1)", event["id"], event["race_start_utc"], official
+        )
+        return official
+    return None
 
 
 class Pipeline:
@@ -114,20 +130,22 @@ class Pipeline:
         return self._openf1_sessions[season]
 
     def openf1_sessions(self, event: dict) -> dict[str, dict]:
-        """Our session code → OpenF1 session, matched through the race date."""
+        """Our session code → OpenF1 session, matched to the nearest OpenF1 race start.
+
+        Nearest-within-window rather than same-date: Jolpica occasionally has a race on the
+        wrong UTC day (Las Vegas 2024: local date, UTC time), which an exact date match missed.
+        """
         sessions = self._sessions_for(event["season"])
-        race_day = event["race_start_utc"].date()
-        meeting = next(
-            (
-                s["meeting_key"]
-                for s in sessions
-                if s.get("session_name") == "Race"
-                and datetime.fromisoformat(s["date_start"]).date() == race_day
-            ),
-            None,
-        )
-        if meeting is None:
+        start = event["race_start_utc"]
+        races = [
+            (abs((datetime.fromisoformat(s["date_start"]) - start).total_seconds()), s)
+            for s in sessions
+            if s.get("session_name") == "Race" and s.get("date_start")
+        ]
+        races = [r for r in races if r[0] <= RACE_MATCH_WINDOW.total_seconds()]
+        if not races:
             return {}
+        meeting = min(races, key=lambda r: r[0])[1]["meeting_key"]
         out = {}
         for s in sessions:
             if s["meeting_key"] != meeting:
@@ -167,6 +185,7 @@ class Pipeline:
         of1 = self.openf1_sessions(event)
         if not of1:
             report.skipped.append("no OpenF1 meeting found")
+        corrected_start = official_race_start(event, of1)
 
         session_laps: dict[str, list[dict]] = {}
         lap_rows: dict[str, list[dict]] = {}
@@ -213,6 +232,12 @@ class Pipeline:
 
         st = self.store
         with st.engine.begin() as conn:
+            if corrected_start is not None:
+                ev = st.t["events"]
+                conn.execute(
+                    ev.update().where(ev.c.id == eid).values(race_start_utc=corrected_start)
+                )
+                report.counts["race_start_corrected"] = 1
             st.upsert(conn, "drivers", list(bundle.drivers.values()))
             colored = [t for t in bundle.teams.values() if t["color_hex"]]
             plain = [t for t in bundle.teams.values() if not t["color_hex"]]

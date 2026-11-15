@@ -27,11 +27,11 @@ insert into teams (id, season, name, color_hex) values
 insert into driver_teams (driver_id, season, team_id) values
   ('leclerc', 2024, 'ferrari'), ('norris', 2024, 'mclaren');
 
-insert into results (event_id, session, driver_id, team_id, position, grid, points, status, time_ms) values
-  (202416, 'R', 'leclerc', 'ferrari', 1, 4, 25, 'Finished', 4480727),
-  (202416, 'R', 'norris', 'mclaren', 3, 1, 16, 'Finished', 4486880),
-  (202416, 'Q', 'norris', 'mclaren', 1, null, 0, null, 79327),
-  (202416, 'Q', 'leclerc', 'ferrari', 4, null, 0, null, 79519);
+insert into results (event_id, session, driver_id, team_id, position, grid, points, status, time_ms, laps) values
+  (202416, 'R', 'leclerc', 'ferrari', 1, 4, 25, 'Finished', 4480727, 53),
+  (202416, 'R', 'norris', 'mclaren', 3, 1, 16, 'Lapped', 4486880, 52),
+  (202416, 'Q', 'norris', 'mclaren', 1, null, 0, null, 79327, null),
+  (202416, 'Q', 'leclerc', 'ferrari', 4, null, 0, null, 79519, null);
 
 insert into laps (event_id, session, driver_id, lap, lap_time_ms, compound, tyre_life, stint,
                   position, pit_in, pit_out, track_status, is_accurate)

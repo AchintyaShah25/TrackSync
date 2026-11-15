@@ -21,7 +21,7 @@ LOCAL_DB_URL := postgresql://postgres:postgres@127.0.0.1:54322/postgres
 DATABASE_URL ?= $(LOCAL_DB_URL)
 export DATABASE_URL
 
-.PHONY: help bootstrap clean-tools up down db-up migrate db-reset db-size etl test test-py test-web lint lint-py lint-web fmt eval
+.PHONY: e2e help bootstrap clean-tools up down db-up migrate db-reset db-size etl test test-py test-web lint lint-py lint-web fmt eval
 
 help: ## List commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
@@ -54,10 +54,10 @@ db-reset: ## Recreate the local database from migrations (destroys local data)
 	$(SUPABASE) db reset --local
 
 db-size: ## Report database and per-table size
-	$(UV) run --package pitwall-etl python -m pitwall_etl.dbsize
+	$(UV) run --package tracksync-etl python -m tracksync_etl.dbsize
 
 etl: ## Run the ETL, e.g. make etl ARGS="--season 2024 --event 16"
-	$(UV) run --package pitwall-etl pitwall-etl $(ARGS)
+	$(UV) run --package tracksync-etl tracksync-etl $(ARGS)
 
 test: test-py test-web ## All tests
 
@@ -66,6 +66,10 @@ test-py: ## pytest for racemodel, etl, api
 
 test-web: ## vitest for the web app
 	@if [ -f apps/web/package.json ]; then pnpm --filter web test; else echo "web app not scaffolded yet"; fi
+
+e2e: ## Playwright showcase tests (builds from fixtures, no API needed)
+	pnpm --filter web e2e:install
+	pnpm --filter web e2e
 
 lint: lint-py lint-web ## All linters and type checks
 

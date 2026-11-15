@@ -21,6 +21,29 @@ export function formatGap(ms: number | null | undefined, leaderMs: number | null
   return `+${((ms - leaderMs) / 1000).toFixed(3)}s`;
 }
 
+/**
+ * What to show in a race result's time column: the winner's total time, the gap for cars
+ * on the lead lap, "+N laps" for lapped cars (their total time covers fewer laps), else
+ * the status (Retired, Disqualified, ...).
+ */
+export function raceTimeCell(
+  row: { time_ms: number | null; laps: number | null; status: string | null },
+  leader: { time_ms: number | null; laps: number | null } | undefined,
+  isLeader: boolean,
+): string {
+  if (isLeader) return formatRaceTime(row.time_ms);
+  const status = row.status ?? "–";
+  if (status === "Finished") return formatGap(row.time_ms, leader?.time_ms) ?? status;
+  // Only classified lapped cars ("Lapped", or Ergast-style "+1 Lap"); a retired car also
+  // has fewer laps but must show its status.
+  const lapped = status === "Lapped" || /^\+\d+ Laps?$/i.test(status);
+  if (lapped && row.laps != null && leader?.laps != null && leader.laps > row.laps) {
+    const down = leader.laps - row.laps;
+    return `+${down} lap${down === 1 ? "" : "s"}`;
+  }
+  return status;
+}
+
 export const eventId = (season: number, round: number) => season * 100 + round;
 
 export function formatPoints(points: number): string {

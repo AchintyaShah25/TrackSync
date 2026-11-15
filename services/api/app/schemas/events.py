@@ -18,6 +18,7 @@ class ResultRow(BaseModel):
     points: float
     status: str | None
     time_ms: int | None
+    laps: int | None  # laps completed (race/sprint); null for qualifying
 
 
 class LapRow(BaseModel):

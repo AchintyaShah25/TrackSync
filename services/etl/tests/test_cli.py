@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 
-from pitwall_etl import cli
-from pitwall_etl.pipeline import EventReport
+from tracksync_etl import cli
+from tracksync_etl.pipeline import EventReport
 
 
 class FakeStore:

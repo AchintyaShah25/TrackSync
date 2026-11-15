@@ -1,6 +1,6 @@
 # 0014: Project name TrackSync; internal identifiers keep `pitwall` for now
 
-- **Status:** Accepted
+- **Status:** Accepted (internal-naming part superseded by [0016](0016-internal-rename-to-tracksync.md))
 - **Date:** 2026-11-14
 - **Milestone:** 1
 

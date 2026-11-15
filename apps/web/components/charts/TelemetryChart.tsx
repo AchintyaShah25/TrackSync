@@ -63,7 +63,7 @@ export function TelemetryChart({ traces }: { traces: Trace[] }) {
                   tickLine={false}
                   axisLine={false}
                   allowDecimals={false}
-                  ticks={panel.channel === "brake" ? [0, 1] : undefined}
+                  ticks={panel.channel === "brake" ? [0, 1] : panel.channel === "gear" ? [2, 4, 6, 8] : undefined}
                   tickFormatter={panel.channel === "brake" ? (v: number) => (v ? "On" : "Off") : undefined}
                 />
                 <Tooltip

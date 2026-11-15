@@ -55,4 +55,4 @@ def fresh_database():
 @pytest.fixture(scope="session")
 def test_db_url(fresh_database) -> str:
     """Migrated database for the ETL tests."""
-    return fresh_database("pitwall_test_etl")
+    return fresh_database("tracksync_test_etl")

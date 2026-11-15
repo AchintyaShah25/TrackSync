@@ -5,10 +5,10 @@ from datetime import UTC, datetime, timedelta
 import numpy as np
 import pandas as pd
 import pytest
-from pitwall_etl.load.db import Store, make_engine
-from pitwall_etl.pipeline import Pipeline
-from pitwall_etl.sources.circuit_info import CircuitInfo
 from sqlalchemy import text
+from tracksync_etl.load.db import Store, make_engine
+from tracksync_etl.pipeline import Pipeline
+from tracksync_etl.sources.circuit_info import CircuitInfo
 
 pytestmark = pytest.mark.db
 
@@ -215,3 +215,24 @@ def test_loaded_rows_have_derived_fields_and_circuit_outline(store, fixture_fram
     assert pit_in == 4
     assert len(trace["speed"]) == 300
     assert len(outline["x"]) == 400 and corners[0]["number"] == 1 and rotation == 95.0
+
+
+def test_meeting_matched_and_race_start_corrected_when_jolpica_is_a_day_off(fixture_frame):
+    """A race whose Jolpica start is on the wrong UTC day still matches its OpenF1 meeting,
+    and the stored start is corrected to OpenF1's official time.
+
+    Why: Las Vegas 2024 was skipped ("no OpenF1 meeting found") because Jolpica dates it
+    2024-11-23 06:00Z while lights out was 2024-11-24 06:00Z.
+    """
+    from tracksync_etl.pipeline import official_race_start
+
+    pipe = Pipeline(None, FakeOpenF1(), now=datetime(2024, 9, 10, tzinfo=UTC))
+    event = {"id": 202416, "season": 2024, "race_start_utc": RACE_START - timedelta(days=1)}
+    of1 = pipe.openf1_sessions(event)
+    assert set(of1) == {"Q", "R"}
+    assert official_race_start(event, of1) == RACE_START
+    # Same race, small difference: keep Jolpica's value.
+    assert official_race_start({**event, "race_start_utc": RACE_START}, of1) is None
+    # More than the window away: not the same race.
+    far = {**event, "race_start_utc": RACE_START - timedelta(days=3)}
+    assert pipe.openf1_sessions(far) == {}

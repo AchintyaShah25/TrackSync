@@ -11,7 +11,7 @@ SEED = Path(__file__).parent / "seed.sql"
 
 @pytest.fixture(scope="session")
 def api_db_url(fresh_database) -> str:
-    url = fresh_database("pitwall_test_api")
+    url = fresh_database("tracksync_test_api")
     with psycopg.connect(url, autocommit=True) as conn:
         conn.execute(SEED.read_text())
     return url

@@ -20,11 +20,11 @@ export function TrackMap({ trace, circuit }: { trace: Trace; circuit: Circuit | 
     const ys = [...y, ...(circuit?.outline?.y ?? [])];
     const minX = Math.min(...xs), maxX = Math.max(...xs);
     const minY = Math.min(...ys), maxY = Math.max(...ys);
-    return { minX: minX - PAD, minY: minY - PAD, w: maxX - minX + 2 * PAD, h: maxY - minY + 2 * PAD, maxY };
+    return { minX: minX - PAD, minY: minY - PAD, w: maxX - minX + 2 * PAD, h: maxY - minY + 2 * PAD, flip: minY + maxY };
   }, [x, y, circuit]);
 
-  // SVG y grows downward; flip so the map matches the official orientation.
-  const fy = (v: number) => box.maxY - v + box.minY;
+  // SVG y grows downward; mirror within the data range so padding stays on both sides.
+  const fy = (v: number) => box.flip - v;
 
   const segments = useMemo(
     () =>

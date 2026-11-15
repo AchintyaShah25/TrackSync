@@ -54,9 +54,9 @@ export function StrategyChart({ data }: { data: StrategyResponse }) {
     <figure aria-label={summary} className="flex flex-col gap-3">
       <figcaption className="sr-only">{summary}</figcaption>
       <Legend compounds={used} />
-      <div style={{ height: rows.length * ROW_HEIGHT + 40 }}>
+      <div style={{ height: rows.length * ROW_HEIGHT + 56 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} layout="vertical" barCategoryGap={4} margin={{ top: 0, right: 8, bottom: 0, left: 0 }}>
+          <BarChart data={chartData} layout="vertical" barCategoryGap={4} margin={{ top: 0, right: 12, bottom: 18, left: 0 }}>
             <CartesianGrid horizontal={false} />
             <XAxis
               type="number"
@@ -64,7 +64,7 @@ export function StrategyChart({ data }: { data: StrategyResponse }) {
               allowDecimals={false}
               tick={{ fontSize: 11 }}
               tickLine={false}
-              label={{ value: "Lap", position: "insideBottomRight", offset: -2, fontSize: 11 }}
+              label={{ value: "Lap", position: "insideBottomRight", offset: -14, fontSize: 11 }}
             />
             <YAxis
               type="category"

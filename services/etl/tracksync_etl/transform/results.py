@@ -61,7 +61,9 @@ def add_race_like(
                 "grid": to_int(row.get("grid")),
                 "points": float(clean(row.get("points")) or 0),
                 "status": clean(row.get("status")),
+                # Lapped cars' total time covers fewer laps; the UI uses laps for them.
                 "time_ms": to_int(row.get("totalRaceTimeMillis")),
+                "laps": to_int(row.get("laps")),
             }
         )
 
@@ -89,6 +91,7 @@ def add_qualifying(bundle: ResultBundle, event_id: int, season: int, df: pd.Data
                 "points": 0.0,
                 "status": None,
                 "time_ms": best,
+                "laps": None,
             }
         )
 

@@ -4,10 +4,10 @@ requires-python = "==3.12.*"
 
 [manifest]
 members = [
-    "pitwall",
-    "pitwall-api",
-    "pitwall-etl",
     "racemodel",
+    "tracksync",
+    "tracksync-api",
+    "tracksync-etl",
 ]
 
 [[package]]
@@ -563,73 +563,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pitwall"
-version = "0.1.0"
-source = { virtual = "." }
-
-[package.dev-dependencies]
-dev = [
-    { name = "httpx" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "httpx" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "ruff" },
-]
-
-[[package]]
-name = "pitwall-api"
-version = "0.1.0"
-source = { editable = "services/api" }
-dependencies = [
-    { name = "asyncpg" },
-    { name = "fastapi" },
-    { name = "pydantic-settings" },
-    { name = "racemodel" },
-    { name = "sqlalchemy", extra = ["asyncio"] },
-    { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "asyncpg" },
-    { name = "fastapi" },
-    { name = "pydantic-settings" },
-    { name = "racemodel", editable = "packages/racemodel" },
-    { name = "sqlalchemy", extras = ["asyncio"] },
-    { name = "uvicorn", extras = ["standard"] },
-]
-
-[[package]]
-name = "pitwall-etl"
-version = "0.1.0"
-source = { editable = "services/etl" }
-dependencies = [
-    { name = "fastf1" },
-    { name = "psycopg", extra = ["binary"] },
-    { name = "racemodel" },
-    { name = "requests" },
-    { name = "sqlalchemy" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastf1" },
-    { name = "psycopg", extras = ["binary"] },
-    { name = "racemodel", editable = "packages/racemodel" },
-    { name = "requests" },
-    { name = "sqlalchemy" },
-]
-
-[[package]]
 name = "platformdirs"
 version = "4.14.5"
 source = { registry = "https://pypi.org/simple" }
@@ -1031,6 +964,73 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/92/69/728b57ee09a36a228f9f5e399eff5e8e8f4e32e3e366b57f56649a3eff28/timple-0.1.8.tar.gz", hash = "sha256:bbc120300f0103a3a93e54a0d00491c4b70872fe69b11204701a4889c6a05f0f", size = 17277, upload-time = "2023-12-27T11:38:20.477Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/75/45/c73f9af9a9d50b0ae972d185ef2255c62524d1aa20a76531dd2fcda48819/timple-0.1.8-py3-none-any.whl", hash = "sha256:195a49e76f8a435e0bc079340b6c57272cc3aff9041f61f8858790d607a4e49d", size = 17824, upload-time = "2023-12-27T11:38:18.835Z" },
+]
+
+[[package]]
+name = "tracksync"
+version = "0.1.0"
+source = { virtual = "." }
+
+[package.dev-dependencies]
+dev = [
+    { name = "httpx" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "httpx" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "ruff" },
+]
+
+[[package]]
+name = "tracksync-api"
+version = "0.1.0"
+source = { editable = "services/api" }
+dependencies = [
+    { name = "asyncpg" },
+    { name = "fastapi" },
+    { name = "pydantic-settings" },
+    { name = "racemodel" },
+    { name = "sqlalchemy", extra = ["asyncio"] },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "asyncpg" },
+    { name = "fastapi" },
+    { name = "pydantic-settings" },
+    { name = "racemodel", editable = "packages/racemodel" },
+    { name = "sqlalchemy", extras = ["asyncio"] },
+    { name = "uvicorn", extras = ["standard"] },
+]
+
+[[package]]
+name = "tracksync-etl"
+version = "0.1.0"
+source = { editable = "services/etl" }
+dependencies = [
+    { name = "fastf1" },
+    { name = "psycopg", extra = ["binary"] },
+    { name = "racemodel" },
+    { name = "requests" },
+    { name = "sqlalchemy" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastf1" },
+    { name = "psycopg", extras = ["binary"] },
+    { name = "racemodel", editable = "packages/racemodel" },
+    { name = "requests" },
+    { name = "sqlalchemy" },
 ]
 
 [[package]]

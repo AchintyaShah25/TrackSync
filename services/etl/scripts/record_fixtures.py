@@ -1,7 +1,7 @@
 """Record small, trimmed fixtures from real sources for offline tests.
 
 Run once (needs network):
-    uv run --package pitwall-etl python services/etl/scripts/record_fixtures.py
+    uv run --package tracksync-etl python services/etl/scripts/record_fixtures.py
 Output: services/etl/tests/fixtures/*.json. Tests never hit the network.
 """
 
@@ -11,9 +11,9 @@ import json
 from pathlib import Path
 
 import pandas as pd
-from pitwall_etl.config import Settings, configure_fastf1
-from pitwall_etl.sources import jolpica
-from pitwall_etl.sources.openf1 import OpenF1Client
+from tracksync_etl.config import Settings, configure_fastf1
+from tracksync_etl.sources import jolpica
+from tracksync_etl.sources.openf1 import OpenF1Client
 
 OUT = Path(__file__).resolve().parents[1] / "tests" / "fixtures"
 SEASON, ROUND = 2024, 16  # Monza 2024

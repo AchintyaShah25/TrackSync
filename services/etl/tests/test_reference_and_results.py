@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 
-from pitwall_etl.transform import reference, results
-from pitwall_etl.transform.common import event_id, slugify
+from tracksync_etl.transform import reference, results
+from tracksync_etl.transform.common import event_id, slugify
 
 
 def test_event_rows_from_recorded_schedule(fixture_frame):
@@ -47,6 +47,7 @@ def test_race_results_use_total_time_and_jolpica_ids(fixture_frame):
     assert first["driver_id"] == "leclerc" and first["team_id"] == "ferrari"
     assert first["position"] == 1 and first["points"] == 25.0
     assert first["time_ms"] == 4480727  # total time, not the gap FastF1 sessions report
+    assert first["laps"] == 53
     assert bundle.number_to_driver[16] == "leclerc"
     assert ("leclerc", 2024, "ferrari") in bundle.driver_teams
 

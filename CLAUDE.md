@@ -1,8 +1,8 @@
 # TrackSync: project guide for Claude Code
 
 TrackSync is an unofficial Formula 1 analytics hub built as an end-to-end portfolio
-project (repo: github.com/AchintyaShah25/TrackSync). Internal code identifiers still use the
-old working name `pitwall` (packages, CLI, local DB); see `docs/decisions/0014`. The full plan, data model, and phase checklists live in
+project (repo: github.com/AchintyaShah25/TrackSync). It was called "Pit Wall" (`pitwall`)
+until 2026-11-14; older decision records and test logs use that name (see decisions 0014, 0016). The full plan, data model, and phase checklists live in
 `docs/SPEC.md`. Read the relevant milestone there before starting any task.
 
 ## What we are building

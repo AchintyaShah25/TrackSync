@@ -1,5 +1,5 @@
 [project]
-name = "pitwall-api"
+name = "tracksync-api"
 version = "0.1.0"
 description = "TrackSync REST API: serves precomputed F1 data from Postgres"
 requires-python = ">=3.12"

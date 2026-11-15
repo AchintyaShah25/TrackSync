@@ -98,19 +98,19 @@ written. Do not start the next milestone until the acceptance criteria pass.
 - [x] Monorepo scaffold matching CLAUDE.md layout; Makefile; `.env.example`
 - [ ] `docker-compose.yml`: web, api, Supabase CLI local stack
 - [x] Migrations: reference tables, results, laps, stints, traces, circuits
-- [ ] ETL for seasons 2023 onward: schedule, results, laps, stints, downsampled
+- [x] ETL for seasons 2023 onward: schedule, results, laps, stints, downsampled
       fastest-lap traces; idempotent upserts; CLI args `--season`, `--event`
 - [x] Circuit outlines built from the X/Y coordinates in OpenF1 position data: take a
       clean fastest lap, apply the circuit's rotation from FastF1 circuit info (MultiViewer),
       normalize, smooth and simplify to ~300-500 points, store in `circuits.outline`;
       store corner positions for labels
 - [x] API: health, seasons, events, results, standings, laps, stints, traces, circuits
-- [ ] Web pages: season results and standings; telemetry comparison (overlay two
+- [x] Web pages: season results and standings; telemetry comparison (overlay two
       drivers: speed, throttle, brake, gear); tire strategy timeline; track map
       colored by speed; shareable URLs for every chart state
-- [ ] Landing page with next-race countdown (viewer's local time) and 3-4 example
+- [x] Landing page with next-race countdown (viewer's local time) and 3-4 example
       links (e.g. "Compare Verstappen vs Norris at Monza"), statically generated
-- [ ] Design tokens, dark mode, mobile layouts, "unofficial" footer
+- [x] Design tokens, dark mode, mobile layouts, "unofficial" footer
 - [ ] CI: lint + tests on every PR; ETL workflow with schedule + manual dispatch
 - [ ] Deploy: Supabase project, API on Render, web on Vercel
 

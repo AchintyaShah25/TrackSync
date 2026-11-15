@@ -1,5 +1,5 @@
 [project]
-name = "pitwall"
+name = "tracksync"
 version = "0.1.0"
 description = "TrackSync: unofficial F1 analytics hub (workspace root)"
 requires-python = ">=3.12,<3.13"

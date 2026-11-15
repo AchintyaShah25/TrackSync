@@ -1,9 +1,9 @@
-"""pitwall-etl command line.
+"""tracksync-etl command line.
 
-pitwall-etl --season 2024                 # whole season (completed events)
-pitwall-etl --season 2024 --event 16      # one event
-pitwall-etl --since-days 8                # scheduled mode: recent + missing events
-pitwall-etl --season 2024 --event 16 --dry-run
+tracksync-etl --season 2024                 # whole season (completed events)
+tracksync-etl --season 2024 --event 16      # one event
+tracksync-etl --since-days 8                # scheduled mode: recent + missing events
+tracksync-etl --season 2024 --event 16 --dry-run
 """
 
 from __future__ import annotations
@@ -21,12 +21,12 @@ from .pipeline import Pipeline
 from .sources.openf1 import OpenF1Client
 from .transform.reference import is_completed
 
-log = logging.getLogger("pitwall_etl")
+log = logging.getLogger("tracksync_etl")
 FIRST_SEASON = 2023  # OpenF1 historical coverage starts here (SPEC: 2023+)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    p = argparse.ArgumentParser(prog="pitwall-etl", description=__doc__.split("\n\n")[0])
+    p = argparse.ArgumentParser(prog="tracksync-etl", description=__doc__.split("\n\n")[0])
     p.add_argument("--season", type=int, help="season year (2023 or later)")
     p.add_argument("--event", type=int, help="round number within --season")
     p.add_argument(

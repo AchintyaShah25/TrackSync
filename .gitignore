@@ -27,3 +27,7 @@ supabase/.temp/
 !.env.example
 .DS_Store
 .claude/settings.local.json
+
+# Playwright
+apps/web/test-results/
+apps/web/playwright-report/

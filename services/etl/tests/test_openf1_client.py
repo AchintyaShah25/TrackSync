@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from pitwall_etl.sources.openf1 import OpenF1Client, OpenF1Error, RateLimiter
+from tracksync_etl.sources.openf1 import OpenF1Client, OpenF1Error, RateLimiter
 
 
 class FakeClock:
@@ -106,7 +106,7 @@ def test_get_retries_on_429_after_a_full_window(tmp_path, monkeypatch):
     see; short exponential backoff gave up before the window reset (seen 2026-11-14).
     """
     sleeps = []
-    monkeypatch.setattr("pitwall_etl.sources.openf1.time.sleep", sleeps.append)
+    monkeypatch.setattr("tracksync_etl.sources.openf1.time.sleep", sleeps.append)
     http = FakeHttp([FakeResponse(429, {}), FakeResponse(200, [{"ok": True}])])
     client = OpenF1Client(None, session=http)
     assert client.get("laps", session_key=1) == [{"ok": True}]

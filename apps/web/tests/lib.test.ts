@@ -5,7 +5,7 @@ import { seriesStyles } from "@/lib/charts/series";
 import { speedColor } from "@/lib/charts/speedScale";
 import { compoundColor, strategyRows, typicalStops } from "@/lib/charts/strategy";
 import { mergeTraces, summarizeTrace } from "@/lib/charts/telemetry";
-import { formatGap, formatLapTime, formatRaceTime } from "@/lib/format";
+import { formatGap, formatLapTime, formatRaceTime, raceTimeCell } from "@/lib/format";
 import { countdown, formatLocalStart, nextRace } from "@/lib/schedule";
 import { parseChoice, parseDriverCodes, withParams } from "@/lib/urlState";
 
@@ -27,6 +27,19 @@ describe("format", () => {
     expect(formatLapTime(null)).toBe("–");
     expect(formatRaceTime(4480727)).toBe("1:14:40.727");
     expect(formatGap(4483391, 4480727)).toBe("+2.664s");
+  });
+});
+
+describe("raceTimeCell", () => {
+  const leader = { time_ms: 4480727, laps: 53 };
+  // Why: Jolpica's total time for a lapped car covers fewer laps, so a time gap is wrong
+  // (Monza 2024 showed Ocon, P14, at "+12.659s"); lapped cars must read "+1 lap".
+  it("shows total, gap, laps down or status", () => {
+    expect(raceTimeCell({ ...leader, status: "Finished" }, leader, true)).toBe("1:14:40.727");
+    expect(raceTimeCell({ time_ms: 4483391, laps: 53, status: "Finished" }, leader, false)).toBe("+2.664s");
+    expect(raceTimeCell({ time_ms: 4493386, laps: 52, status: "Lapped" }, leader, false)).toBe("+1 lap");
+    expect(raceTimeCell({ time_ms: 4493386, laps: 51, status: "Lapped" }, leader, false)).toBe("+2 laps");
+    expect(raceTimeCell({ time_ms: null, laps: 20, status: "Retired" }, leader, false)).toBe("Retired");
   });
 });
 

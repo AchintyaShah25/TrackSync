@@ -66,7 +66,7 @@ async def get_results(conn: AsyncConnection, event_id: int, session: str) -> lis
     rows = await conn.execute(
         text(
             """
-            select driver_id, position, grid, points, status, time_ms from results
+            select driver_id, position, grid, points, status, time_ms, laps from results
             where event_id = :id and session = :s
             order by position nulls last, driver_id
             """
@@ -81,6 +81,7 @@ async def get_results(conn: AsyncConnection, event_id: int, session: str) -> lis
             points=r.points,
             status=r.status,
             time_ms=r.time_ms,
+            laps=r.laps,
         )
         for r in rows
         if r.driver_id in drivers

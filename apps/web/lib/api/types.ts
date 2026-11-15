@@ -56,6 +56,7 @@ export interface ResultRow {
   points: number;
   status: string | null;
   time_ms: number | null;
+  laps: number | null;
 }
 
 export interface StintRow {
