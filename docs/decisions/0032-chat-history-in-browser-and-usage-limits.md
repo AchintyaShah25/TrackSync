@@ -1,6 +1,6 @@
 # 0032: Chat history in the browser; durable daily limits; guest vs user limits
 
-- **Status:** Accepted
+- **Status:** Accepted (site-wide cap changed by 0036)
 - **Date:** 2026-11-16
 - **Milestone:** 3
 

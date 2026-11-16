@@ -119,6 +119,8 @@ class OpenAICompatClient:
             self._transport, url, headers, json.dumps(payload).encode(), p.timeout_s
         )
         if status == 429:
+            # The body says which limit (per minute, per day, request too large).
+            log.info("llm %s 429: %s", p.name, raw[:300])
             raise RateLimited(p.name, _retry_after(resp_headers))
         if status >= 500 or status in (401, 403, 404):
             # 401/403/404 mean a bad key or model name: a config problem, not the user's.

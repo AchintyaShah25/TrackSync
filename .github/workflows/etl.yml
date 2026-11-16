@@ -3,6 +3,10 @@ name: ETL
 on:
   schedule:
     - cron: "0 6 * * 1" # Mondays 06:00 UTC, after race weekends (SPEC §2)
+    # Daily knowledge-base embeddings: Gemini embeds 1000 texts a day for free, so the
+    # first build and any backlog finish over several days (decisions 0034, 0037). The
+    # quota resets at midnight Pacific (08:00 UTC). Cheap once everything is embedded.
+    - cron: "30 9 * * *"
   workflow_dispatch:
     inputs:
       season:
@@ -69,11 +73,14 @@ jobs:
           IN_SEASON: ${{ inputs.season }}
           IN_EVENT: ${{ inputs.event }}
           IN_SINCE: ${{ inputs.since_days || '8' }}
+          SCHEDULE: ${{ github.event.schedule }}
         run: |
           set -euo pipefail
           is_int() { [[ "$1" =~ ^[0-9]+$ ]]; }
           args=()
-          if [ -n "$IN_SEASON" ]; then
+          if [ "$SCHEDULE" = "30 9 * * *" ]; then
+            args+=(--rag)
+          elif [ -n "$IN_SEASON" ]; then
             is_int "$IN_SEASON" || { echo "season must be a number"; exit 1; }
             args+=(--season "$IN_SEASON")
             if [ -n "$IN_EVENT" ]; then

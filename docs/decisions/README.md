@@ -40,3 +40,5 @@ write a new record that supersedes the old one.
 | 0033 | End-to-end tests mock the chat API in the browser | Accepted | 2026-11-16 |
 | 0034 | Living with Gemini's 1000-per-day embedding quota | Accepted | 2026-11-15 |
 | 0035 | Groq model `openai/gpt-oss-120b`; Gemini is only a thin fallback | Accepted (supersedes the default model in 0026) | 2026-11-15 |
+| 0036 | Several models per provider in the LLM chain; chat cap sized to them | Accepted | 2026-11-15 |
+| 0037 | Embedding backfill: daily GitHub Actions run for production, manual locally | Accepted | 2026-11-15 |

@@ -148,6 +148,44 @@ def test_build_chain_skips_providers_without_keys():
     assert [c.provider.name for c in only.clients] == ["gemini"]
 
 
+def test_build_chain_accepts_several_models_per_provider():
+    """ "provider:model" entries build one client per model; bare names use the default.
+
+    Why: free quotas are per model (Groq: ~200k tokens a day each), so chaining several
+    Groq models multiplies daily capacity (decision 0036).
+    """
+    chain = build_chain(
+        Settings(
+            groq_api_key="g",
+            gemini_api_key="m",
+            llm_chain="groq:big/model, groq:small/model ,gemini",
+        )
+    )
+    assert [(c.provider.name, c.provider.model) for c in chain.clients] == [
+        ("groq", "big/model"),
+        ("groq", "small/model"),
+        ("gemini", Settings().gemini_model),
+    ]
+
+
+async def test_rate_limit_benches_only_that_model():
+    """A 429 on one model of a provider still lets the next model of the same provider answer,
+    and the benched model is skipped until its cooldown ends.
+
+    Why: on 2026-11-15 gpt-oss-120b hit its daily token cap; with per-provider cooldowns,
+    every other Groq model would have been skipped too.
+    """
+    big = Script((429, {"retry-after": "60"}, b"{}"), ok("big again"))
+    small = Script(ok("small"), ok("small 2"))
+    mk = lambda m, sc: OpenAICompatClient(Provider("groq", "https://g.test/v1", "k", m), sc)  # noqa: E731
+    clock = Clock()
+    chain = LLMChain([mk("big", big), mk("small", small)], clock=clock)
+    assert (await chain.chat([])).model == "small"
+    assert (await chain.chat([])).model == "small"  # big still benched
+    clock.t += 61
+    assert (await chain.chat([])).model == "big"
+
+
 async def test_embed_query_normalizes_and_degrades_to_none():
     """Embeddings come back unit-length; any failure returns None (full-text fallback).
 

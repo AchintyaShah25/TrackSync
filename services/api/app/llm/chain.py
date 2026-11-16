@@ -1,8 +1,11 @@
 """Provider fallback chain with per-provider cooldowns (decision 0026).
 
-Free tiers rate-limit hard. When a provider returns 429 (or is down), the chain moves to
-the next one and skips the failed provider until its cooldown ends, so a busy minute on
-Groq falls through to Gemini instead of failing the user's question.
+Free tiers rate-limit hard. When a model returns 429 (or is down), the chain moves to the
+next one and skips the failed model until its cooldown ends, so a busy minute on Groq
+falls through to the next model instead of failing the user's question.
+
+Entries are "provider" (its default model) or "provider:model". Free quotas are per model,
+so several models from one provider add up to more daily capacity (decision 0036).
 """
 
 from __future__ import annotations
@@ -55,7 +58,7 @@ class LLMChain:
         now = self._clock()
         last_error: Exception | None = None
         for client in self.clients:
-            name = client.provider.name
+            name = f"{client.provider.name}:{client.provider.model}"
             if self._cooldown_until.get(name, 0.0) > now:
                 continue
             try:
@@ -78,14 +81,16 @@ class LLMChain:
 
 
 def build_chain(settings: Settings, transport: Transport = urllib_transport) -> LLMChain:
-    """Providers from settings, in LLM_CHAIN order, skipping any without an API key."""
+    """Models from settings, in LLM_CHAIN order, skipping providers without an API key."""
     available = {
         "groq": (settings.groq_api_key, GROQ_URL, settings.groq_model),
         "gemini": (settings.gemini_api_key, GEMINI_URL, settings.gemini_model),
     }
     clients = []
-    for name in (n.strip().lower() for n in settings.llm_chain.split(",") if n.strip()):
-        key, url, model = available.get(name, ("", "", ""))
+    for entry in (e.strip() for e in settings.llm_chain.split(",") if e.strip()):
+        name, _, model = entry.partition(":")
+        key, url, default_model = available.get(name.strip().lower(), ("", "", ""))
         if key:
-            clients.append(OpenAICompatClient(Provider(name, url, key, model), transport))
+            provider = Provider(name.strip().lower(), url, key, model.strip() or default_model)
+            clients.append(OpenAICompatClient(provider, transport))
     return LLMChain(clients)

@@ -39,7 +39,11 @@ whether stats questions used the stats tool, and answer correctness. Latest run
 | Answer correctness (key facts, 51 of 52 answered) | 96% | |
 
 Embeddings cover 982 of 2,543 chunks so far: Gemini's free tier embeds 1,000 texts a day,
-so the rest backfill over the next runs ([decision 0034](docs/decisions/0034-gemini-daily-embedding-quota.md)).
+so the rest backfill over the next runs ([decision 0034](docs/decisions/0034-gemini-daily-embedding-quota.md)):
+production through a daily GitHub Actions run, locally with `make rag-backfill`
+([decision 0037](docs/decisions/0037-embedding-backfill-schedule.md)). Chat uses several
+free Groq models in turn, because each has its own daily token budget
+([decision 0036](docs/decisions/0036-multi-model-llm-chain.md)).
 
 ## Strategy forecaster: how accurate is it?
 
@@ -68,6 +72,7 @@ the Supabase CLI, and the package caches. Nothing is installed globally, and
 make bootstrap                                  # Python 3.12, venv, node deps, Supabase CLI; creates .env
 make db-up && make migrate                      # local Postgres on 127.0.0.1:54322, schema applied
 make etl ARGS="--season 2024 --event 16"        # load one race (Monza 2024), 3-5 minutes
+make rag-backfill                               # chat knowledge base: embed up to 1000 chunks/day (needs GEMINI_API_KEY)
 make up                                         # Postgres + api (:8000) + web (:3000) in Docker
 ```
 

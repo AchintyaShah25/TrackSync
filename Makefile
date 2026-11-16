@@ -27,7 +27,7 @@ LOCAL_DB_URL := postgresql://postgres:postgres@127.0.0.1:54322/postgres
 DATABASE_URL ?= $(LOCAL_DB_URL)
 export DATABASE_URL
 
-.PHONY: e2e help bootstrap clean-tools up down db-up migrate db-reset db-size etl test test-py test-web lint lint-py lint-web fmt eval
+.PHONY: e2e help bootstrap clean-tools up down db-up migrate db-reset db-size etl test test-py test-web lint lint-py lint-web fmt eval rag-backfill
 
 help: ## List commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
@@ -94,6 +94,9 @@ lint-web:
 fmt: ## Auto-format Python
 	$(UV) run ruff check --fix .
 	$(UV) run ruff format .
+
+rag-backfill: ## Embed knowledge-base chunks into the LOCAL DB (once a day until done; decision 0037)
+	bash scripts/rag-backfill.sh; tail -n 5 .cache/rag-backfill.log
 
 eval: ## Race-model backtest + chat evals (retrieval always; full agent when LLM keys are set)
 	$(UV) run --package tracksync-etl python evals/racemodel/backtest.py

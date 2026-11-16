@@ -21,7 +21,9 @@ class Settings(BaseSettings):
     # answers 503 "not configured" and everything else keeps working.
     groq_api_key: str = ""
     gemini_api_key: str = ""
-    llm_chain: str = "groq,gemini"
+    # "provider" or "provider:model"; quotas are per model, so the Groq models add up
+    # (decision 0036). Groq's free tier gives each model about 200k tokens a day.
+    llm_chain: str = "groq:openai/gpt-oss-120b,groq:qwen/qwen3.8-27b,groq:openai/gpt-oss-20b,gemini"
     groq_model: str = "openai/gpt-oss-120b"
     gemini_model: str = "gemini-2.5-flash"
 
@@ -30,7 +32,9 @@ class Settings(BaseSettings):
     chat_guest_per_day: int = 30
     chat_user_per_minute: int = 10
     chat_user_per_day: int = 100
-    chat_global_per_day: int = 800
+    # Sized to what the free models can serve: ~600k Groq tokens a day at ~4k per chat
+    # (decision 0036). Above it users see a clear daily-limit message, not "busy".
+    chat_global_per_day: int = 150
 
     # Supabase Auth (decision 0030): the API validates sign-in tokens via /auth/v1/user.
     supabase_url: str = ""
