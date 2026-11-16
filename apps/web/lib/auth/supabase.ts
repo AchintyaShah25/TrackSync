@@ -14,7 +14,9 @@ export function supabase(): SupabaseClient | null {
   client =
     url && key
       ? createClient(url, key, {
-          auth: { flowType: "pkce", persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+          // /auth/callback exchanges the code itself; automatic URL detection would race it
+          // and spend the one-time code first, making the callback report a failed link.
+          auth: { flowType: "pkce", persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
         })
       : null;
   return client;

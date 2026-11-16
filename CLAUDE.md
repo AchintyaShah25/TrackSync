@@ -145,7 +145,7 @@ own data. Do not scrape news sites.
 **Milestone 3: Chat agent, auth, light personalization**: built and tested locally (2026-11-16).
 Evals recorded 2026-11-15 (README; decisions 0034-0037). Open: local embeddings backfill
 (`make rag-backfill` once a day until 0 left; Gemini free = 1000/day; it re-runs the eval
-when done), then `/deploy` (migration 20261117090000; Render/Vercel env vars; a separate
+when done), then `/deploy` (migration 20261117090000; Render/Vercel env vars; Supabase redirect URL `https://tracksync-ruddy.vercel.app/auth/callback**` (wildcard needed); a separate
 Google Cloud project key for production Gemini; Supabase redirect URLs; GitHub secrets;
 the daily `--rag` cron backfills production once ETL_ENABLED is on). Milestones 1-2 shipped 2026-11-15/16.
 Live: web https://tracksync-ruddy.vercel.app, API https://tracksync-api.onrender.com (decision 0018).

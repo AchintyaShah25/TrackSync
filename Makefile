@@ -49,10 +49,18 @@ db-up: ## Start only the local Postgres
 # http://127.0.0.1:54324). Everything else stays off (decision 0031).
 SUPABASE_UNUSED := realtime,storage-api,imgproxy,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
 stack-up: ## Start local Postgres + Supabase Auth (for sign-in)
+	@# After `make db-up` only the database runs, and `supabase start` would leave Auth off.
+	@if docker ps --format '{{.Names}}' | grep -qx supabase_db_tracksync && \
+	  ! docker ps --format '{{.Names}}' | grep -qx supabase_auth_tracksync; then \
+	  echo "database-only stack is running; restarting it with Auth (data is kept)"; \
+	  $(SUPABASE) stop; fi
 	$(SUPABASE) start -x $(SUPABASE_UNUSED)
 
+# The local stack's anon key is a public demo key; read it from `supabase status` so
+# sign-in works without copying it into .env.
 up: stack-up migrate ## Local Postgres + Auth + api + web (decision 0031)
-	docker compose up --build
+	ANON=$$($(SUPABASE) status -o env 2>/dev/null | sed -n 's/^ANON_KEY="\{0,1\}\([^"]*\)"\{0,1\}$$/\1/p'); \
+	SUPABASE_ANON_KEY=$$ANON NEXT_PUBLIC_SUPABASE_ANON_KEY=$$ANON docker compose up --build
 
 down: ## Stop app containers and the local Supabase stack
 	docker compose down
